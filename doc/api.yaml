@@ -1,0 +1,13 @@
+openapi: '3.0.2'
+info:
+  title: WASA Photo REST API
+  description: |
+    This is the API specification for the WASA Photo REST API.
+
+    It's part of the WASA Photo project for the Web and Software Architecture course at Sapienza University of Rome.
+
+    The project description and details are availabe at [this link](http://gamificationlab.uniroma1.it/notes/Project.pdf)
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
