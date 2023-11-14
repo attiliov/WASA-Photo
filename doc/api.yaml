@@ -1,5 +1,6 @@
 openapi: '3.0.2'
 info:
+  version: 1.0.0
   title: WASA Photo REST API
   description: |
     This is the API specification for the WASA Photo REST API.
@@ -11,3 +12,278 @@ info:
 servers:
   - url: http://localhost:8080
     description: Local development server
+
+tags:
+  - name: signin/signup
+    description: |
+      This tag is used for the signin/signup operations.
+  - name: user
+    description: |
+      This tag is used for the user operations.
+  - name: post
+    description: |
+      This tag is used for the post operations. 
+  - name: comment 
+    description: |
+      This tag is used for the comment operations.
+  - name: like
+    description: |
+      This tag is used for the like operations.
+
+
+components:
+
+  securitySchemes:
+    bearerAuth:            
+      type: http
+      scheme: bearer
+
+  schemas:
+      
+    username:
+      description: Username of a user
+      type: string
+      minLength: 4
+      maxLength: 20
+      pattern: '^[a-zA-Z0-9_-!]+$'
+      readOnly: true
+      example: mariorossi99
+
+    resourceId:
+      description: The Universally Unique Identifier (follows the standard)
+      type: string
+      format: uuid
+      example: 550e8400-e29b-41d4-a716-446655440000
+      readOnly: true
+  
+    date:
+      description: representation of Date and time
+      type: string
+      format: date-time
+      example: 2023-01-01T00:00:00Z
+      readOnly: true
+    
+    caption:
+      description: A caption for a post or a comment
+      type: string
+      example: "This is a caption"
+      readOnly: false
+    
+    image:
+      description: An uri to an image
+      type: string
+      format: uri
+      example : "localhost:8080/users/mariorossi99/posts/1/image"
+      readOnly: false
+
+    counter:
+      description: A simple counter,
+                    keeps track of the number of followers, likes, etc.
+      type: integer
+      example: 8
+      readOnly: true
+
+    userCollection:
+      description: A list of usersnames, 
+                   it is used to keep track of the users that liked a post or a comment
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+      readOnly: false
+
+    User:
+      title: User
+      type: object
+      description: A user of the WASA Photo platform
+      properties:
+        userId:
+          $ref: '#/components/schemas/resourceId'
+        username:
+          $ref: '#/components/schemas/username'
+        signUpDate:
+          $ref: '#/components/schemas/date'
+        lastSeenDate:
+          $ref: '#/components/schemas/date'
+        bio:
+          $ref: '#/components/schemas/caption'
+        profileImage:
+          $ref: '#/components/schemas/image'
+        followers:
+          $ref: '#/components/schemas/counter'
+        following:
+          $ref: '#/components/schemas/counter'
+      required:
+        - username
+        - signUpDate
+
+    UserPost:
+      title: UserPost
+      type: object
+      description: A post created by a user
+      properties:
+        id:
+          $ref: '#/components/schemas/resourceId'
+        author:
+          $ref: '#/components/schemas/username'
+        creationDate:
+          $ref: '#/components/schemas/date'
+        caption:
+          $ref: '#/components/schemas/caption'
+        image:
+          $ref: '#/components/schemas/image'
+        likeCount:
+          $ref: '#/components/schemas/counter'
+        commentCount:
+          $ref: '#/components/schemas/counter'
+      required:
+        - id
+        - creationDate
+        - caption
+
+    Comment:
+      title: Comment
+      type: object
+      description: A comment made by a user to a post
+      properties:
+        id:
+          $ref: '#/components/schemas/resourceId'
+        author:
+            $ref: '#/components/schemas/username'
+        creationDate:
+          $ref: '#/components/schemas/date'
+        caption:
+          $ref: '#/components/schemas/caption'
+        likeCount:
+          $ref: '#/components/schemas/counter'
+      required:
+        - id
+        - author
+        - creationDate
+        - caption
+    
+    PostLikes:
+      description: A list of users that liked a post
+      $ref: '#/components/schemas/userCollection'
+
+    CommentLikes:
+      description: A list of users that liked a comment
+      $ref: '#/components/schemas/userCollection'
+
+    postStream:
+      description: An array of posts, 
+                   can either be the list of posts of a user or the list of posts of the users followed by a user 
+      type: array
+      items:
+        $ref: '#/components/schemas/UserPost'
+    
+    commentStream:
+      description: An array of comments of a post
+      type: array
+      items:
+        $ref: '#/components/schemas/Comment'
+
+    Error:
+      description: An error message
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Resource not found"
+      required:
+        - message
+    
+    Success:
+      description: A success message
+      type: object
+      properties:
+        message:
+          type: string
+        body:
+          type: object
+      required:
+        - message
+  
+  responses:
+
+    #Error responses
+    NotFound: #for 404
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized: #for 401
+      description: The request requires user authentication, 
+                    or the user is not authorized to perform the requested action
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest: #for 400
+      description: The request was not valid, 
+                    the request body is missing or malformed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError: #for 500
+      description: An error occurred on the server side
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    #Success responses
+    Created: #for 201
+      description: The resource was successfully created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Success'
+    Ok: #for 200
+      description: The request has succeeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Success'
+
+
+paths:
+  /login/:
+    post:
+      tags: ["signin/signup"]
+      operationId: doLogin
+      summary: Sign in or sugn up
+      description: |
+        This endpoint is used to sign in or sign up a user.
+        If the user is already registered, the endpoint will sign in the user.
+        If the user is not registered, the endpoint will sign up the user.
+        The userId is returned in the response.
+      requestBody:
+        description: The username to either sign in or UserPost
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/username'
+      responses:
+        "200": #user exists and is signed in
+          {$ref: '#/components/responses/Ok'}
+        "201": #user does not exist and is signed up
+          {$ref: '#/components/responses/Created'}
+        "400": #the request body is missing or malformed
+          {$ref: '#/components/responses/BadRequest'}
+        "500": # internal server error
+          {$ref: '#/components/responses/InternalServerError'}
+  /users/:
+
+    
+
+
+
+security:
+  - bearerAuth: [] 
+
+
+
+
