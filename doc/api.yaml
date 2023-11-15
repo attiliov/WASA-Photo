@@ -805,31 +805,6 @@ paths:
 
   /users/{userId}/followers/:
     description: This endpoint handles the collection of followers of a user.
-  
-    post:
-      tags: ["follow"]
-      operationId: followUser
-      summary: Follow a user
-      description: |
-        This request is used to follow a user.
-        The userId of the user to follow is passed as a path parameter.
-        The userId of the user who is following is taken from the bearer token.
-        The response will retun the new list of followers of the user.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-      responses:
-        "200":
-          description: The new list of followers of the user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/userCollection'
-        "404": #user not found
-          $ref: '#/components/responses/NotFound'
-        "500": #server error
-          $ref: '#/components/responses/InternalServerError'
-        "401": #unauthorized
-          $ref: '#/components/responses/Unauthorized'
     
     get: 
       tags: ["follow"]
