@@ -325,7 +325,7 @@ components:
 
 paths:
 
-  /login/:
+  /login:
     description: This endpoint is used to sign in or sign up a user.
     post:
       tags: ["signin/signup"]
@@ -353,7 +353,7 @@ paths:
         "500": # internal server error
           {$ref: '#/components/responses/InternalServerError'}
   
-  /users/:
+  /users:
     description: This endpoints handles collection of users.
     get:
       tags: ["user"]
@@ -455,7 +455,7 @@ paths:
         "500": #server error
           $ref: '#/components/responses/InternalServerError'
 
-  /users/{userId}/posts/:
+  /users/{userId}/posts:
     description: This endpoint handles the collection of posts of a user.
     
     post: 
@@ -564,7 +564,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /users/{postownerId}/posts/{postId}/likes/:
+  /users/{postownerId}/posts/{postId}/likes:
     description: This endpoint handles the collection of likes of a post.
 
     get:
@@ -645,7 +645,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /users/{postownerId}/posts/{postId}/comments/:
+  /users/{postownerId}/posts/{postId}/comments:
     description: This endpoint handles the collection of comments of a post.
     
     post:
@@ -752,7 +752,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /users/{postownerId}/posts/{postId}/comments/{commentId}/likes/:
+  /users/{postownerId}/posts/{postId}/comments/{commentId}/likes:
     description: This endpoint handles the collection of likes of a comment.
 
     get:
@@ -833,7 +833,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /users/{userId}/followers/:
+  /users/{userId}/followers:
     description: This endpoint handles the collection of followers of a user.
     
     get: 
@@ -860,7 +860,7 @@ paths:
         "401": #unauthorized
           $ref: '#/components/responses/Unauthorized'
 
-  /users/{userId}/following/:
+  /users/{userId}/following:
     description: This endpoint handles the collection of users followed by a user.
 
     post: 
@@ -941,7 +941,7 @@ paths:
         "401": #unauthorized
           $ref: '#/components/responses/Unauthorized'
     
-  /users/{userId}/banned/:
+  /users/{userId}/banned:
     description: This endpoint handles the collection of banned users of a user.
 
     post: 
@@ -998,7 +998,7 @@ paths:
         "500": #server error
           $ref: '#/components/responses/InternalServerError'
 
-  /user/{userId}/banned/{bannedId}/:
+  /user/{userId}/banned/{bannedId}:
     description: A user banned by a user
 
     delete:
@@ -1066,7 +1066,7 @@ paths:
         "500": #server error
           $ref: '#/components/responses/InternalServerError'
         
-  /user/{userId}/photos/{photoId}/:
+  /user/{userId}/photos/{photoId}:
     description: A photo of a user
 
     get:
