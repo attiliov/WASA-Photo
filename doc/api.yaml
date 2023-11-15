@@ -55,40 +55,46 @@ components:
       maxLength: 20
       pattern: '^[a-zA-Z0-9_-!]+$'
       readOnly: true
-      example: mariorossi99
+      examples: 
+        - mariorossi99
 
     resourceId:
       description: The Universally Unique Identifier (follows the standard)
       type: string
       format: uuid
-      example: 550e8400-e29b-41d4-a716-446655440000
+      examples: 
+        - 550e8400-e29b-41d4-a716-446655440000
       readOnly: true
   
     date:
       description: representation of Date and time
       type: string
       format: date-time
-      example: 2023-01-01T00:00:00Z
+      examples: 
+        - 2023-01-01T00:00:00Z
       readOnly: true
     
     caption:
       description: A caption for a post or a comment
       type: string
-      example: "This is a caption"
+      examples: 
+        - "This is a caption"
       readOnly: false
     
     image:
       description: An uri to an image
       type: string
       format: uri
-      example : "localhost:8080/users/mariorossi99/posts/1/image"
+      examples: 
+        - "localhost:8080/users/mariorossi99/posts/1/image"
       readOnly: false
 
     counter:
       description: A simple counter,
                     keeps track of the number of followers, likes, etc.
       type: integer
-      example: 8
+      examples: 
+        - 8
       readOnly: true
 
     userCollection:
@@ -202,7 +208,8 @@ components:
       properties:
         message:
           type: string
-          example: "Resource not found"
+          examples: 
+            - "Resource not found"
       required:
         - message
     
