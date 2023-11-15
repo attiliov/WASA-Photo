@@ -1,4 +1,4 @@
-openapi: '3.1.0'
+openapi: 3.1.0
 info:
   version: 1.0.0
   title: WASA Photo REST API
@@ -42,7 +42,11 @@ tags:
 components:
 
   securitySchemes:
-    bearerAuth:            
+    bearerAuth:
+      description: |
+        This security scheme is used to authenticate a user.
+        The user must be signed in to perform the request.
+        The user must pass the bearer token in the Authorization header.
       type: http
       scheme: bearer
 
@@ -180,14 +184,6 @@ components:
         - creationDate
         - caption
     
-    like: 
-      title: like
-      type: object
-      description: represents a like by a user to a resource
-      properties:
-        userId:
-          description: user who liked
-          $ref: '#/components/schemas/User/properties/userId'
 
     postStream:
       description: An array of posts, 
@@ -232,10 +228,52 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/resourceId'
-    resourceId:
+    imageId:
       name: resourceId
       in: path
       description: The resourceId that is being requested
+      required: true
+      schema:
+        $ref: '#/components/schemas/resourceId'
+    postId:
+      name: postId
+      in: path
+      description: The postId that is being requested
+      required: true
+      schema:
+        $ref: '#/components/schemas/resourceId'
+    commentId:
+      name: commentId
+      in: path
+      description: The commentId that is being requested
+      required: true
+      schema:
+        $ref: '#/components/schemas/resourceId'
+    followingId:
+      name: followingId
+      in: path
+      description: The userId that is being requested
+      required: true
+      schema:
+        $ref: '#/components/schemas/resourceId'
+    bannedId:
+      name: bannedId
+      in: path
+      description: The userId that is being requested
+      required: true
+      schema:
+        $ref: '#/components/schemas/resourceId'
+    photoId:
+      name: photoId
+      in: path
+      description: The photoId that is being requested
+      required: true
+      schema:
+        $ref: '#/components/schemas/resourceId'
+    likeId:
+      name: likeId
+      in: path
+      description: The likeId that is being requested
       required: true
       schema:
         $ref: '#/components/schemas/resourceId'
@@ -477,7 +515,7 @@ paths:
         The response will retun the details of the post in the body.
       parameters:
         - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/resourceId'
+        - $ref: '#/components/parameters/postId'
       responses:
         "200":
           $ref: '#/components/schemas/UserPost'
@@ -497,7 +535,7 @@ paths:
         The response will retun the id of the new post.
       parameters:
         - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/resourceId'
+        - $ref: '#/components/parameters/postId'
       requestBody:
         $ref: '#/components/schemas/UserPost'
       responses:
@@ -517,7 +555,7 @@ paths:
       description: Deletes the given post
       parameters:
         - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/resourceId'
+        - $ref: '#/components/parameters/postId'
       responses:
         "200": #update successful
           $ref: '#/components/schemas/Success'
@@ -534,12 +572,12 @@ paths:
       operationId: getPostLikes
       summary: Get all the likes of a post
       description: |
-        This request is used to get all the likes of a post.
+        This request is used to get all the users that liked a post.
         The postId is passed as a path parameter.
         The response will retun the list of likes of the post.
       parameters:
-        - $ref: '#/components/parameters/resourceId'
         - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/postId'
       responses:
         "200":
           description: The list of likes of the post
@@ -562,15 +600,13 @@ paths:
       operationId: likePost
       summary: Like a post
       description: |
-        This request is used to keep all the likes to a post.
+        This request is like a post.
         The postId is taken from the path
         The userId of the user who is liking is taken from the bearer token
         The response doesnt have a body
       parameters:
-        - description: The id of the post
-          $ref: '#/components/parameters/resourceId'
-        - description: The id of the post author
-          $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/postId'
       responses:
         "200":
           $ref: '#/components/responses/Ok'
@@ -591,10 +627,8 @@ paths:
         The userId of the like to remove is taken from the bearer token
         The response will return the new list of likes of the post
       parameters:
-        - description: The id of the post
-          $ref: '#/components/parameters/resourceId'
-        - description: The id of the post author
-          $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/postId'
       responses:
         '200':
           description: The new list of likes of the post
@@ -626,7 +660,7 @@ paths:
         The response will retun the id of the new comment.
       parameters:
         - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/resourceId'
+        - $ref: '#/components/parameters/postId'
       requestBody:
         $ref: '#/components/schemas/Comment'
       responses:
@@ -649,7 +683,7 @@ paths:
         The response will retun the list of comments of the post.
       parameters:
         - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/resourceId'
+        - $ref: '#/components/parameters/postId'
       responses:
         "200":
           description: The list of comments of the post
@@ -672,13 +706,13 @@ paths:
       description: |
         This request is used to edit a comment.
         The postownerId, the postId and the commentId are passed as path parameters.
-        A user can edit only is own comments.
+        A user can edit only is own comments. (owner is compared with the userId in the bearer token)
         The new comment details are passed in the request body.
         The response will retun the id of the new comment.
       parameters:
         - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/resourceId'
-        - $ref: '#/components/parameters/resourceId'
+        - $ref: '#/components/parameters/postId'
+        - $ref: '#/components/parameters/commentId'
       requestBody:
         $ref: '#/components/schemas/Comment'
       responses:
@@ -690,7 +724,7 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         "500":
           $ref: '#/components/responses/InternalServerError'
-      
+  
     delete: 
       tags: ["comment"]
       operationId: deleteComment
@@ -698,12 +732,12 @@ paths:
       description:
         This request is used to delete a comment.
         The postownerId, the postId and the commentId are passed as path parameters.
-        A user can delete only is own comments.
+        A user can delete only is own comments. (owner is compared with the userId in the bearer token)
         The response will retun the new collection of comments of the post.
       parameters:
         - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/resourceId'
-        - $ref: '#/components/parameters/resourceId'
+        - $ref: '#/components/parameters/postId'
+        - $ref: '#/components/parameters/commentId'
       responses:
         "200":
           description: The new collection of comments of the post
@@ -731,8 +765,8 @@ paths:
         The response will retun the list of likes of the post.
       parameters:
         - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/resourceId'
-        - $ref: '#/components/parameters/resourceId'
+        - $ref: '#/components/parameters/postId'
+        - $ref: '#/components/parameters/commentId'
       responses:
         "200":
           description: The list of likes of the comment
@@ -753,14 +787,13 @@ paths:
       operationId: likeComment
       summary: Like a comment
       description: |
-        This request is used to keep all the likes to a comment.
+        This request is used to like a comment.
         The postId is taken from the path
         The userId of the user who is liking is taken from the bearer token
       parameters:
-        - description: The id of the post
-          $ref: '#/components/parameters/resourceId'
-        - description: The id of the post author
-          $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/postId'
+        - $ref: '#/components/parameters/commentId'
       responses:
         "200":
           $ref: '#/components/responses/Ok'
@@ -781,15 +814,12 @@ paths:
         The userId of the like to remove is taken from the bearer token
         The response will return the new list of likes of the comment
       parameters:
-        - description: The id of the post author
-          $ref: '#/components/parameters/userId'
-        - description: The id of the post
-          $ref: '#/components/parameters/resourceId'
-        - description: The id of the comment
-          $ref: '#/components/parameters/resourceId'        
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/postId'
+        - $ref: '#/components/parameters/commentId'       
       responses:
         '200':
-          description: The new list of likes of the post
+          description: The new list of users that liked the post
           content:
             application/json:
               schema:
@@ -896,7 +926,7 @@ paths:
         The response will retun the new list of followers of the user.
       parameters:
         - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/followingId'
       responses:
         "200":
           description: The new list of followers of the user
@@ -982,7 +1012,7 @@ paths:
         The response will retun the new list of banned users of the user.
       parameters:
         - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/bannedId'
       responses:
         "200":
           description: The new list of banned users of the user
@@ -1006,6 +1036,7 @@ paths:
         This request is used to upload a photo.
         The userId of the user who is uploading is taken from the bearer token.
         The photo is passed in the request body.
+        A user can upload only in his own photo collection. (owner is compared with the userId in the bearer token)
         The response will retun the uri of the photo.
       parameters:
         - $ref: '#/components/parameters/userId'
@@ -1049,7 +1080,7 @@ paths:
         The response will return the image file.
       parameters:
         - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/resourceId'
+        - $ref: '#/components/parameters/photoId'
       responses:
         "200":
           description: The image file
@@ -1076,7 +1107,7 @@ paths:
         The response will return the image file.
       parameters:
         - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/resourceId'
+        - $ref: '#/components/parameters/photoId'
       responses:
         "200":
           $ref: '#/components/responses/Ok'
@@ -1090,7 +1121,3 @@ paths:
 
 security:
   - bearerAuth: [] 
-
-
-
-
