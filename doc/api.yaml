@@ -228,13 +228,6 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/resourceId'
-    imageId:
-      name: resourceId
-      in: path
-      description: The resourceId that is being requested
-      required: true
-      schema:
-        $ref: '#/components/schemas/resourceId'
     postId:
       name: postId
       in: path
