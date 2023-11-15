@@ -830,35 +830,6 @@ paths:
         "401": #unauthorized
           $ref: '#/components/responses/Unauthorized'
 
-  /users/{userId}/followers/{followerId}:
-    description: A follower of a user
-  
-    delete:
-      tags: ["follow"]
-      operationId: unfollowUser
-      summary: Unfollow a user
-      description: |
-        This request is used to unfollow a user.
-        The userId of the user to unfollow is passed as a path parameter.
-        The userId of the user who is unfollowing is taken from the bearer token.
-        The response will retun the new list of followers of the user.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/resourceId'
-      responses:
-        "200":
-          description: The new list of followers of the user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/userCollection'
-        "404": #user not found
-          $ref: '#/components/responses/NotFound'
-        "500": #server error
-          $ref: '#/components/responses/InternalServerError'
-        "401": #unauthorized
-          $ref: '#/components/responses/Unauthorized'
-
   /users/{userId}/following/:
     description: This endpoint handles the collection of users followed by a user.
 
