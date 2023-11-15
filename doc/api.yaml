@@ -564,7 +564,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /users/{postownerId}/posts/{postId}/likes:
+  /users/{userId}/posts/{postId}/likes:
     description: This endpoint handles the collection of likes of a post.
 
     get:
@@ -592,7 +592,7 @@ paths:
         "401":
           $ref: '#/components/responses/Unauthorized'
     
-  /users/{postownerId}/posts/{postId}/likes/{userId}:
+  /users/{userId}/posts/{postId}/likes/{likeId}:
     description: A like to a post
     
     put:
@@ -645,7 +645,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /users/{postownerId}/posts/{postId}/comments:
+  /users/{userId}/posts/{postId}/comments:
     description: This endpoint handles the collection of comments of a post.
     
     post:
@@ -696,7 +696,7 @@ paths:
         "500": #server error
           $ref: '#/components/responses/InternalServerError'
 
-  /users/{postownerId}/posts/{postId}/comments/{commentId}:
+  /users/{userId}/posts/{postId}/comments/{commentId}:
     description: This hendpoints handles comment edits and deletion
 
     put: 
@@ -752,7 +752,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /users/{postownerId}/posts/{postId}/comments/{commentId}/likes:
+  /users/{userId}/posts/{postId}/comments/{commentId}/likes:
     description: This endpoint handles the collection of likes of a comment.
 
     get:
@@ -779,7 +779,7 @@ paths:
         "500": #server error
           $ref: '#/components/responses/InternalServerError'
   
-  /users/{postownerId}/posts/{postId}/comments/{commentId}/likes/{userId}:
+  /users/{userId}/posts/{postId}/comments/{commentId}/likes/{likeId}:
     description: A like to a comment
     
     put:
