@@ -607,6 +607,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/userId'
         - $ref: '#/components/parameters/postId'
+        - $ref: '#/components/parameters/likeId'
       responses:
         "200":
           $ref: '#/components/responses/Ok'
@@ -629,6 +630,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/userId'
         - $ref: '#/components/parameters/postId'
+        - $ref: '#/components/parameters/likeId'
       responses:
         '200':
           description: The new list of likes of the post
@@ -794,6 +796,7 @@ paths:
         - $ref: '#/components/parameters/userId'
         - $ref: '#/components/parameters/postId'
         - $ref: '#/components/parameters/commentId'
+        - $ref: '#/components/parameters/likeId'
       responses:
         "200":
           $ref: '#/components/responses/Ok'
@@ -816,7 +819,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/userId'
         - $ref: '#/components/parameters/postId'
-        - $ref: '#/components/parameters/commentId'       
+        - $ref: '#/components/parameters/commentId'
+        - $ref: '#/components/parameters/likeId'  
       responses:
         '200':
           description: The new list of users that liked the post
