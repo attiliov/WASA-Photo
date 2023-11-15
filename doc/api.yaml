@@ -1,4 +1,4 @@
-openapi: '3.0.7'
+openapi: '3.1.0'
 info:
   version: 1.0.0
   title: WASA Photo REST API
@@ -38,6 +38,7 @@ tags:
   - name: photo
     description: |
       This tag is for photo related operations.
+
 components:
 
   securitySchemes:
