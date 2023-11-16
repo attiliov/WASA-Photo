@@ -1116,5 +1116,32 @@ paths:
         "500": #server error
           $ref: '#/components/responses/InternalServerError'
 
+  /users/{userId}/feed:
+  description: This endpoint is used to get the feed of an user
+                i.e. ther  stream of posts of the following users
+  
+  get:
+    tags: ["feed"]
+    operationId: getFeed
+    summary: Get the feed of a user
+    description: |
+      This request is used to get the feed of a user.
+      The userId of the user who is requesting is taken from the bearer token.
+      The response will return the stream of posts of the following users.
+    parameters:
+      - $ref: '#/components/parameters/userId'
+    responses:
+      "200":
+        description: The feed of the user who is requesting
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/postStream'
+      "401":
+        $ref: '#/components/responses/Unauthorized'
+      "500": #server error
+        $ref: '#/components/responses/InternalServerError'    
+
+
 security:
   - bearerAuth: [] 
