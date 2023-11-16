@@ -995,7 +995,7 @@ paths:
         "500": #server error
           $ref: '#/components/responses/InternalServerError'
 
-  /user/{userId}/banned/{bannedId}:
+  /users/{userId}/banned/{bannedId}:
     description: A user banned by a user
 
     delete:
@@ -1022,7 +1022,7 @@ paths:
         "500": #server error
           $ref: '#/components/responses/InternalServerError'
 
-  /user/{userId}/photos:
+  /users/{userId}/photos:
     description: This endpoint handles the collection of photos of a user.
 
     post:
@@ -1064,7 +1064,7 @@ paths:
         "500": #server error
           $ref: '#/components/responses/InternalServerError'
         
-  /user/{userId}/photos/{photoId}:
+  /users/{userId}/photos/{photoId}:
     description: A photo of a user
 
     get:
@@ -1115,7 +1115,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         "500": #server error
           $ref: '#/components/responses/InternalServerError'
-
 
 security:
   - bearerAuth: [] 
