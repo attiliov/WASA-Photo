@@ -59,46 +59,40 @@ components:
       maxLength: 20
       pattern: '^[a-zA-Z0-9_-!]+$'
       readOnly: true
-      examples: 
-        - mariorossi99
+      example: mariorossi99
 
     resourceId:
       description: The Universally Unique Identifier (follows the standard)
       type: string
       format: uuid
-      examples: 
-        - 550e8400-e29b-41d4-a716-446655440000
+      example: 550e8400-e29b-41d4-a716-446655440000
       readOnly: true
   
     date:
       description: representation of Date and time
       type: string
       format: date-time
-      examples: 
-        - 2023-01-01T00:00:00Z
+      example: 2023-01-01T00:00:00Z
       readOnly: true
     
     caption:
       description: A caption for a post or a comment
       type: string
-      examples: 
-        - "This is a caption"
+      example: "This is a caption"
       readOnly: false
     
     image:
       description: An uri to an image
       type: string
       format: uri
-      examples: 
-        - "localhost:8080/users/mariorossi99/posts/1/image"
+      example: "localhost:8080/users/mariorossi99/posts/1/image"
       readOnly: false
 
     counter:
       description: A simple counter,
                     keeps track of the number of followers, likes, etc.
       type: integer
-      examples: 
-        - 8
+      example: 8
       readOnly: true
 
     userCollection:
@@ -204,8 +198,6 @@ components:
       properties:
         message:
           type: string
-          examples: 
-            - "Resource not found"
       required:
         - message
     
@@ -315,6 +307,35 @@ components:
           schema:
             $ref: '#/components/schemas/Success'
 
+  requestBodies:
+    UserPost:
+      description: A post created by a user
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserPost'
+    Comment:
+      description: A comment made by a user to a post
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Comment'
+    username:
+      description: The username of a user
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/username'
+    photo:
+      description: The photo of a user
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/image'
 
 paths:
 
@@ -463,7 +484,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/userId'
       requestBody:
-        $ref: '#/components/schemas/UserPost'
+        $ref: '#/components/requestBodies/UserPost'
       responses:
         "201":
           $ref: '#/components/schemas/Success'
@@ -530,7 +551,7 @@ paths:
         - $ref: '#/components/parameters/userId'
         - $ref: '#/components/parameters/postId'
       requestBody:
-        $ref: '#/components/schemas/UserPost'
+        $ref: '#/components/requestBodies/UserPost'
       responses:
         "200": #update successful
           $ref: '#/components/schemas/Success'
@@ -657,7 +678,7 @@ paths:
         - $ref: '#/components/parameters/userId'
         - $ref: '#/components/parameters/postId'
       requestBody:
-        $ref: '#/components/schemas/Comment'
+        $ref: '#/components/requestBodies/Comment'
       responses:
         "201":
           $ref: '#/components/schemas/Success'
@@ -709,7 +730,7 @@ paths:
         - $ref: '#/components/parameters/postId'
         - $ref: '#/components/parameters/commentId'
       requestBody:
-        $ref: '#/components/schemas/Comment'
+        $ref: '#/components/requestBodies/Comment'
       responses:
         "200": #update successful
           $ref: '#/components/schemas/Success'
@@ -953,12 +974,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/userId'
       requestBody:
-        description: The userId of the user to ban
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User/properties/userId'
+        $ref: '#/components/requestBodies/username'
       responses:
         "200":
           description: The new list of banned users of the user
