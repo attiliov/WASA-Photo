@@ -301,13 +301,14 @@ components:
             $ref: '#/components/schemas/Error'
     
     
+    
     #Success responses
     Created: #for 201
       description: The resource was successfully created
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/Created'
+            $ref: '#/components/schemas/resourceId'
     Ok: #for 200
       description: The request has succeeded
       content:
@@ -321,6 +322,7 @@ components:
           schema:
             type: string
             format: binary
+    
 
   requestBodies:
     UserPost:
@@ -404,7 +406,7 @@ paths:
           description: The list of usernames similar to the one passed as a query parameter
           content:
             application/json:
-              schema:
+              schema: 
                 $ref: '#/components/schemas/userCollection'
         "400": #the request body is missing or malformed
           {$ref: '#/components/responses/BadRequest'}
