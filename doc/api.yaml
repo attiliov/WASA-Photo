@@ -307,7 +307,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/responses/Success'
+            $ref: '#/components/responses/Created'
     Ok: #for 200
       description: The request has succeeded
       content:
