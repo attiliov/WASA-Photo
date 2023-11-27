@@ -292,6 +292,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    image: # an image file, can be any type of image
+      description: An image file
+      content:
+        image/*:
+          schema:
+            type: string
+            format: binary
     
     #Success responses
     Created: #for 201
@@ -1097,12 +1104,7 @@ paths:
         - $ref: '#/components/parameters/photoId'
       responses:
         "200":
-          description: The image file
-          content:
-            image/*:
-              schema:
-                type: string
-                format: binary
+          $ref: '#/components/responses/image'
         "404": #photo not found
           $ref: '#/components/responses/NotFound'
         "401":
