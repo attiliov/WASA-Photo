@@ -1,4 +1,5 @@
 openapi: 3.1.0
+
 info:
   version: 1.0.0
   title: WASA Photo REST API
@@ -292,13 +293,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    image: # an image file, can be any type of image
-      description: An image file
+    Conflict: #for 409
+      description: The request could not be completed due to a conflict with the current state of the target resource
       content:
-        image/*:
+        application/json:
           schema:
-            type: string
-            format: binary
+            $ref: '#/components/schemas/Error'
+    
     
     #Success responses
     Created: #for 201
@@ -306,13 +307,20 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Success'
+            $ref: '#/components/responses/Success'
     Ok: #for 200
       description: The request has succeeded
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Success'
+    image: # an image file, can be any type of image
+      description: An image file
+      content:
+        image/*:
+          schema:
+            type: string
+            format: binary
 
   requestBodies:
     UserPost:
@@ -458,7 +466,7 @@ paths:
         "500":  
           $ref: '#/components/responses/InternalServerError'
         "409":
-          $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/Conflict'
 
              
     delete: #delete
@@ -494,7 +502,7 @@ paths:
         $ref: '#/components/requestBodies/UserPost'
       responses:
         "201":
-          $ref: '#/components/schemas/Success'
+          $ref: '#/components/responses/Created'
         "400": #the request body is missing or malformed
           $ref: '#/components/responses/BadRequest'
         "404": #user not found
@@ -688,7 +696,7 @@ paths:
         $ref: '#/components/requestBodies/Comment'
       responses:
         "201":
-          $ref: '#/components/schemas/Success'
+          $ref: '#/components/responses/Created'
         "400": #the request body is missing or malformed
           $ref: '#/components/responses/BadRequest'
         "404": #user not found
@@ -1077,7 +1085,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/image'
+                $ref: '#/components/responses/Created'
         "400": #the request body is missing or malformed
           $ref: '#/components/responses/BadRequest'
         "404": #user not found
