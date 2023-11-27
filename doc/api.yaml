@@ -740,6 +740,7 @@ paths:
   /users/{userId}/posts/{postId}/comments/{commentId}:
     description: This hendpoints handles comment edits and deletion
 
+      
     put: 
       tags: ["comment"]
       operationId: editComment
@@ -758,7 +759,7 @@ paths:
         $ref: '#/components/requestBodies/Comment'
       responses:
         "200": #update successful
-          $ref: '#/components/schemas/Success'
+          $ref: '#/components/responses/Ok'
         "404":
           $ref: '#/components/responses/NotFound'
         "401":
