@@ -597,7 +597,7 @@ paths:
         - $ref: '#/components/parameters/postId'
       responses:
         "200": #update successful
-          $ref: '#/components/responses/Success'
+          $ref: '#/components/responses/Ok'
         "404":
           $ref: '#/components/responses/NotFound'
         "500":
