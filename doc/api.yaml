@@ -334,6 +334,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Comment'
+    resourceId:
+      description: A resource id
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/resourceId'
 
   requestBodies:
     UserPost:
@@ -1117,11 +1123,7 @@ paths:
                   description: The image file to upload
       responses:
         "201":
-          description: The uri of the photo
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/Created'
+          $ref: '#/components/responses/resourceId'
         "400": #the request body is missing or malformed
           $ref: '#/components/responses/BadRequest'
         "404": #user not found
