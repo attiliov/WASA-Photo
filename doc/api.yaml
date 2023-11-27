@@ -431,9 +431,12 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/User'
-                  - $ref: '#/components/schemas/postStream'
+                type: object
+                properties:
+                  userInfo:
+                    $ref: '#/components/schemas/User'
+                  userStream:
+                    $ref: '#/components/schemas/postStream'
         "404": # user not found
           {$ref: '#/components/responses/NotFound'}
         "500":
