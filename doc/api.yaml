@@ -328,6 +328,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/UserPost'
+    Comment: # 200 response for a comment
+      description: A comment made by a user to a post
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Comment'
 
   requestBodies:
     UserPost:
@@ -740,7 +746,26 @@ paths:
   /users/{userId}/posts/{postId}/comments/{commentId}:
     description: This hendpoints handles comment edits and deletion
 
-      
+    get:
+      tags: ["comment"]
+      operationId: getComment
+      summary: Get the details of a comment
+      description: |
+        This request is used to get the details of a comment.
+        The postownerId, the postId and the commentId are passed as path parameters.
+        The response will retun the details of the comment in the body.
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/postId'
+        - $ref: '#/components/parameters/commentId'
+      responses:
+        "200":
+          $ref: '#/components/responses/Comment'
+        "404": #post not found
+          $ref: '#/components/responses/NotFound'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
     put: 
       tags: ["comment"]
       operationId: editComment
