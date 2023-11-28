@@ -15,7 +15,7 @@ servers:
     description: Local development server
 
 tags:
-  - name: signin/signup
+  - name: login
     description: |
       This tag is used for the signin/signup operations.
   - name: user
@@ -39,6 +39,7 @@ tags:
   - name: photo
     description: |
       This tag is for photo related operations.
+  - name: feed
 
 components:
 
@@ -372,34 +373,29 @@ components:
             $ref: '#/components/schemas/image'
 
 paths:
-
-  /login:
-    description: This endpoint is used to sign in or sign up a user.
+ 
+  /session:
     post:
-      tags: ["signin/signup"]
+      tags: ["login"]
+      summary: Logs in the user
+      description: |-
+        If the user does not exist, it will be created,
+        and an identifier is returned.
+        If the user exists, the user identifier is returned.
       operationId: doLogin
-      summary: Sign in or sugn up
-      description: |
-        This endpoint is used to sign in or sign up a user.
-        If the user is already registered, the endpoint will sign in the user.
-        If the user is not registered, the endpoint will sign up the user.
-        The userId is returned in the response body.
       requestBody:
-        description: The username to either sign in or UserPost
-        required: true
+        description: User details
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/username'
+              $ref: '#/components/schemas/username' 
       responses:
-        "200": #user exists and is signed in
-          {$ref: '#/components/responses/Ok'}
-        "201": #user does not exist and is signed up
-          {$ref: '#/components/responses/Created'}
-        "400": #the request body is missing or malformed
-          {$ref: '#/components/responses/BadRequest'}
-        "500": # internal server error
-          {$ref: '#/components/responses/InternalServerError'}
+        '201':
+          description: User log-in action successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resourceId'
   
   /users:
     description: This endpoints handles collection of users.
