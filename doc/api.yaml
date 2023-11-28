@@ -1015,7 +1015,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         "401": #unauthorized
           $ref: '#/components/responses/Unauthorized'
-    
+
   /users/{userId}/banned:
     description: This endpoint handles the collection of banned users of a user.
 
@@ -1132,7 +1132,7 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         "500": #server error
           $ref: '#/components/responses/InternalServerError'
-        
+
   /users/{userId}/photos/{photoId}:
     description: A photo of a user
 
