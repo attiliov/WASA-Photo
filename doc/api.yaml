@@ -138,7 +138,7 @@ components:
       type: object
       description: A post created by a user
       properties:
-        id:
+        postId:
           $ref: '#/components/schemas/resourceId'
         author:
           $ref: '#/components/schemas/username'
@@ -153,7 +153,7 @@ components:
         commentCount:
           $ref: '#/components/schemas/counter'
       required:
-        - id
+        - postId
         - creationDate
         - caption
 
@@ -175,7 +175,7 @@ components:
         likeCount:
           $ref: '#/components/schemas/counter'
       required:
-        - id
+        - commentId
         - author
         - creationDate
         - caption
@@ -186,7 +186,7 @@ components:
                    can either be the list of posts of a user or the list of posts of the users followed by a user 
       type: array
       items:
-        $ref: '#/components/schemas/UserPost/properties/id'
+        $ref: '#/components/schemas/UserPost/properties/postId'
     
     commentStream:
       description: An array of comments of a post
