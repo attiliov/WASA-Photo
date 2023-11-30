@@ -59,7 +59,7 @@ components:
       type: string
       minLength: 4
       maxLength: 20
-      pattern: '^a-zA-Z0-9_-!$'
+      pattern: '^[a-zA-Z0-9_-]+$'
       readOnly: true
       example: mariorossi99
 
@@ -80,6 +80,9 @@ components:
     caption:
       description: A caption for a post or a comment
       type: string
+      minLength: 1
+      maxLength: 800
+      pattern: '.*'
       example: "This is a caption"
       readOnly: false
     
@@ -101,6 +104,8 @@ components:
       description: A list of usersnames, 
                    it is used to keep track of the users that liked a post or a comment
       type: array
+      minLength: 0
+      maxLength: 69420
       items:
         anyOf:
           - $ref: '#/components/schemas/User/properties/username'
@@ -138,9 +143,9 @@ components:
       type: object
       description: A post created by a user
       properties:
-        id:
+        postId:
           $ref: '#/components/schemas/resourceId'
-        author:
+        authorUsername:
           $ref: '#/components/schemas/username'
         creationDate:
           $ref: '#/components/schemas/date'
@@ -153,7 +158,8 @@ components:
         commentCount:
           $ref: '#/components/schemas/counter'
       required:
-        - id
+        - postId
+        - authorUsername
         - creationDate
         - caption
 
@@ -175,8 +181,9 @@ components:
         likeCount:
           $ref: '#/components/schemas/counter'
       required:
-        - id
-        - author
+        - commentId
+        - authorId
+        - authorUsername
         - creationDate
         - caption
     
@@ -185,12 +192,16 @@ components:
       description: An array of posts, 
                    can either be the list of posts of a user or the list of posts of the users followed by a user 
       type: array
+      minLength: 0
+      maxLength: 69420
       items:
-        $ref: '#/components/schemas/UserPost/properties/id'
+        $ref: '#/components/schemas/UserPost/properties/postId'
     
     commentStream:
       description: An array of comments of a post
       type: array
+      minLength: 0
+      maxLength: 69420
       items:
         $ref: '#/components/schemas/Comment'
 
@@ -200,6 +211,9 @@ components:
       properties:
         message:
           type: string
+          minLength: 1
+          maxLength: 100
+          pattern: '^[a-zA-Z0-9_-]$'
       required:
         - message
     
@@ -209,6 +223,9 @@ components:
       properties:
         message:
           type: string
+          minLength: 1
+          maxLength: 100
+          pattern: '^[a-zA-Z0-9_-]$'
         body:
           type: object
       required:
@@ -364,13 +381,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/username'
-    photo:
-      description: The photo of a user
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/image'
 
 paths:
  
@@ -378,7 +388,7 @@ paths:
     post:
       tags: ["login"]
       summary: Logs in the user
-      description: |-
+      description: |
         If the user does not exist, it will be created,
         and an identifier is returned.
         If the user exists, the user identifier is returned.
@@ -422,11 +432,13 @@ paths:
               schema: 
                 $ref: '#/components/schemas/userCollection'
         "400": #the request body is missing or malformed
-          {$ref: '#/components/responses/BadRequest'}
+          $ref: '#/components/responses/BadRequest'
   
   /users/{userId}:
     description: This endpoints handles a single user.
                   it can be used to get the details of a user, delete it, or update it.
+    parameters:
+      - $ref: '#/components/parameters/userId'
 
     get: #get user profile
       tags: ["user"]
@@ -438,8 +450,6 @@ paths:
         The response will retun:
           - the details of the user
           - the list of posts of the user.
-      parameters:
-        - $ref: '#/components/parameters/userId'
       responses:
         "200":
           description: User is found and profile is returned in the response body
@@ -459,11 +469,9 @@ paths:
 
     put: #update user information
       tags: ["user"]
-      operationId: updateMyProfile
+      operationId: setMyUserName #actually updateUserProfile since it will update any profile info
       summary: Update the profile of a user
       description: Updates the given profile
-      parameters:
-        - $ref: '#/components/parameters/userId'
       requestBody:
         description: A user object
         content: 
@@ -471,7 +479,7 @@ paths:
             schema: 
               $ref: '#/components/schemas/User'
       responses:
-        "200":
+        "202":
           description: User fields updated successfully
           content:
             application/json:
@@ -485,15 +493,12 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         "409":
           $ref: '#/components/responses/Conflict'
-
-             
+           
     delete: #delete
       tags: ["user"]
       operationId: deleteUser
       summary: Delete a user
       description: Deletes the given user
-      parameters:
-        - $ref: '#/components/parameters/userId'
       responses:
         "200": #user deleted
           $ref: '#/components/responses/Ok'
@@ -504,7 +509,9 @@ paths:
 
   /users/{userId}/posts:
     description: This endpoint handles the collection of posts of a user.
-    
+    parameters:
+      - $ref: '#/components/parameters/userId'
+  
     post: 
       tags: ["post"]
       operationId: createPost
@@ -514,8 +521,6 @@ paths:
         The userId is passed as a path parameter.
         The post details are passed in the request body.
         The response will retun the id of the new post.
-      parameters:
-        - $ref: '#/components/parameters/userId'
       requestBody:
         $ref: '#/components/requestBodies/UserPost'
       responses:
@@ -536,8 +541,6 @@ paths:
         This endpoint is used to get all the posts of a user.
         The userId is passed as a path parameter.
         The response will retun the list of posts of the user.
-      parameters:
-        - $ref: '#/components/parameters/userId'
       responses:
         "200":
           description: The list of posts of the user
@@ -551,6 +554,9 @@ paths:
   /users/{userId}/posts/{postId}:
     description: This endpoint handles a single post of a user.
                   it can be used to get the details of a post, delete it, or update it.
+    parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/postId'
     
     get:
       tags: ["post"]
@@ -560,9 +566,6 @@ paths:
         This request is used to get the details of a post.
         The userId and the postId are passed as path parameters.
         The response will retun the details of the post in the body.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/postId'
       responses:
         "200":
           $ref: '#/components/responses/UserPost'
@@ -580,13 +583,10 @@ paths:
         The userId and the postId are passed as path parameters.
         The new post details are passed in the request body.
         The response will retun the id of the new post.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/postId'
       requestBody:
         $ref: '#/components/requestBodies/UserPost'
       responses:
-        "200": #update successful
+        "202": #update successful
           $ref: '#/components/responses/Ok'
         "404":
           $ref: '#/components/responses/NotFound'
@@ -600,9 +600,6 @@ paths:
       operationId: deletePost
       summary: Delete the post
       description: Deletes the given post
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/postId'
       responses:
         "200": #update successful
           $ref: '#/components/responses/Ok'
@@ -613,6 +610,9 @@ paths:
 
   /users/{userId}/posts/{postId}/likes:
     description: This endpoint handles the collection of likes of a post.
+    parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/postId'
 
     get:
       tags: ["like"]
@@ -622,9 +622,6 @@ paths:
         This request is used to get all the users that liked a post.
         The postId is passed as a path parameter.
         The response will retun the list of likes of the post.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/postId'
       responses:
         "200":
           description: The list of likes of the post
@@ -641,22 +638,22 @@ paths:
     
   /users/{userId}/posts/{postId}/likes/{likeId}:
     description: A like to a post
-    
+    parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/postId'
+      - $ref: '#/components/parameters/likeId'
+
     put:
       tags: ["like"]
-      operationId: likePost
+      operationId: likePhoto
       summary: Like a post
       description: |
         This request is like a post.
         The postId is taken from the path
         The userId of the user who is liking is taken from the bearer token
         The response doesnt have a body
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/postId'
-        - $ref: '#/components/parameters/likeId'
       responses:
-        "200":
+        "202":
           $ref: '#/components/responses/Ok'
         "404":
           $ref: '#/components/responses/NotFound'
@@ -667,17 +664,13 @@ paths:
     
     delete:
       tags: ["like"]
-      operationId: unlikePost
+      operationId: unlikePhoto
       summary: Unlike a post
       description: |
         This request is used to remove a like from a post.
         The postId is taken from the path
         The userId of the like to remove is taken from the bearer token
         The response will return the new list of likes of the post
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/postId'
-        - $ref: '#/components/parameters/likeId'
       responses:
         '200':
           description: The new list of likes of the post
@@ -696,10 +689,13 @@ paths:
 
   /users/{userId}/posts/{postId}/comments:
     description: This endpoint handles the collection of comments of a post.
-    
+    parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/postId'
+  
     post:
       tags: ["comment"]
-      operationId: createComment
+      operationId: commentPhoto
       summary: Create a new comment
       description: |
         This request is used to create a new comment.
@@ -707,9 +703,6 @@ paths:
         The comment author is in the body.
         The comment details are passed in the request body.
         The response will retun the id of the new comment.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/postId'
       requestBody:
         $ref: '#/components/requestBodies/Comment'
       responses:
@@ -730,9 +723,6 @@ paths:
         This endpoint is used to get all the comments of a post.
         The userId and the postId are passed
         The response will retun the list of comments of the post.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/postId'
       responses:
         "200":
           description: The list of comments of the post
@@ -747,7 +737,10 @@ paths:
 
   /users/{userId}/posts/{postId}/comments/{commentId}:
     description: This hendpoints handles comment edits and deletion
-
+    parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/postId'
+      - $ref: '#/components/parameters/commentId'
     get:
       tags: ["comment"]
       operationId: getComment
@@ -756,10 +749,6 @@ paths:
         This request is used to get the details of a comment.
         The postownerId, the postId and the commentId are passed as path parameters.
         The response will retun the details of the comment in the body.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/postId'
-        - $ref: '#/components/parameters/commentId'
       responses:
         "200":
           $ref: '#/components/responses/Comment'
@@ -778,14 +767,10 @@ paths:
         A user can edit only is own comments. (owner is compared with the userId in the bearer token)
         The new comment details are passed in the request body.
         The response will retun the id of the new comment.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/postId'
-        - $ref: '#/components/parameters/commentId'
       requestBody:
         $ref: '#/components/requestBodies/Comment'
       responses:
-        "200": #update successful
+        "202": #update successful
           $ref: '#/components/responses/Ok'
         "404":
           $ref: '#/components/responses/NotFound'
@@ -796,17 +781,13 @@ paths:
   
     delete: 
       tags: ["comment"]
-      operationId: deleteComment
+      operationId: uncommentPhoto
       summary: Delete a comment
       description:
         This request is used to delete a comment.
         The postownerId, the postId and the commentId are passed as path parameters.
         A user can delete only is own comments. (owner is compared with the userId in the bearer token)
         The response will retun the new collection of comments of the post.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/postId'
-        - $ref: '#/components/parameters/commentId'
       responses:
         "200":
           description: The new collection of comments of the post
@@ -823,6 +804,10 @@ paths:
 
   /users/{userId}/posts/{postId}/comments/{commentId}/likes:
     description: This endpoint handles the collection of likes of a comment.
+    parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/postId'
+      - $ref: '#/components/parameters/commentId'
 
     get:
       tags: ["like"]
@@ -832,10 +817,6 @@ paths:
         This request is used to get all the likes of a comment.
         The postId is passed as a path parameter.
         The response will retun the list of likes of the post.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/postId'
-        - $ref: '#/components/parameters/commentId'
       responses:
         "200":
           description: The list of likes of the comment
@@ -850,7 +831,12 @@ paths:
   
   /users/{userId}/posts/{postId}/comments/{commentId}/likes/{likeId}:
     description: A like to a comment
-    
+    parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/postId'
+      - $ref: '#/components/parameters/commentId'
+      - $ref: '#/components/parameters/likeId'
+
     put:
       tags: ["like"]
       operationId: likeComment
@@ -859,13 +845,8 @@ paths:
         This request is used to like a comment.
         The postId is taken from the path
         The userId of the user who is liking is taken from the bearer token
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/postId'
-        - $ref: '#/components/parameters/commentId'
-        - $ref: '#/components/parameters/likeId'
       responses:
-        "200":
+        "202":
           $ref: '#/components/responses/Ok'
         "404":
           $ref: '#/components/responses/NotFound'
@@ -883,11 +864,6 @@ paths:
         The postId is taken from the path
         The userId of the like to remove is taken from the bearer token
         The response will return the new list of likes of the comment
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/postId'
-        - $ref: '#/components/parameters/commentId'
-        - $ref: '#/components/parameters/likeId'  
       responses:
         '200':
           description: The new list of users that liked the post
@@ -906,7 +882,9 @@ paths:
 
   /users/{userId}/followers:
     description: This endpoint handles the collection of followers of a user.
-    
+    parameters:
+      - $ref: '#/components/parameters/userId'
+
     get: 
       tags: ["follow"]
       operationId: getFollowers
@@ -915,8 +893,6 @@ paths:
         This request is used to get all the followers of a user.
         The userId is passed as a path parameter.
         The response will retun the list of followers of the user.
-      parameters:
-        - $ref: '#/components/parameters/userId'
       responses:
         "200":
           description: The list of followers of the user
@@ -933,6 +909,8 @@ paths:
 
   /users/{userId}/following:
     description: This endpoint handles the collection of users followed by a user.
+    parameters:
+      - $ref: '#/components/parameters/userId'
 
     post: 
       tags: ["follow"]
@@ -943,10 +921,8 @@ paths:
         The userId of the user to follow is passed as a path parameter.
         The userId of the user who is following is taken from the bearer token.
         The response will retun the new list of followers of the user.
-      parameters:
-        - $ref: '#/components/parameters/userId'
       responses:
-        "200":
+        "201":
           description: The new list of followers of the user
           content:
             application/json:
@@ -985,6 +961,9 @@ paths:
   
   /users/{userId}/following/{followingId}:
     description: A user followed by a user
+    parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/followingId'
 
     delete:
       tags: ["follow"]
@@ -995,9 +974,6 @@ paths:
         The userId of the user to unfollow is passed as a path parameter.
         The userId of the user who is unfollowing is taken from the bearer token.
         The response will retun the new list of followers of the user.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/followingId'
       responses:
         "200":
           description: The new list of followers of the user
@@ -1014,6 +990,8 @@ paths:
     
   /users/{userId}/banned:
     description: This endpoint handles the collection of banned users of a user.
+    parameters:
+      - $ref: '#/components/parameters/userId'
 
     post: 
       tags: ["ban"]
@@ -1024,12 +1002,10 @@ paths:
         The userId of the user to ban is passed in the request body.
         The userId of the user who is banning is taken from the path.
         The response will retun the new list of banned users of the user.
-      parameters:
-        - $ref: '#/components/parameters/userId'
       requestBody:
         $ref: '#/components/requestBodies/username'
       responses:
-        "200":
+        "201":
           description: The new list of banned users of the user
           content:
             application/json:
@@ -1050,8 +1026,6 @@ paths:
         This request is used to get all the users banned by a user.
         The userId is passed as a path parameter.
         The response will retun the list of users banned by the user.
-      parameters:
-        - $ref: '#/components/parameters/userId'
       responses:
         "200":
           description: The list of users banned by the user
@@ -1066,7 +1040,10 @@ paths:
 
   /users/{userId}/banned/{bannedId}:
     description: A user banned by a user
-
+    parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/bannedId'
+  
     delete:
       tags: ["ban"]
       operationId: unbanUser
@@ -1076,9 +1053,6 @@ paths:
         The userId of the user to unban is passed as a path parameter.
         The userId of the user who is unbanning is taken from the bearer token (its also in the path since one can only change is own ban list).
         The response will retun the new list of banned users of the user.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/bannedId'
       responses:
         "200":
           description: The new list of banned users of the user
@@ -1093,6 +1067,8 @@ paths:
 
   /users/{userId}/photos:
     description: This endpoint handles the collection of photos of a user.
+    parameters:
+        - $ref: '#/components/parameters/userId'
 
     post:
       tags: ["photo"]
@@ -1104,8 +1080,6 @@ paths:
         The photo is passed in the request body.
         A user can upload only in his own photo collection. (owner is compared with the userId in the bearer token)
         The response will retun the uri of the photo.
-      parameters:
-        - $ref: '#/components/parameters/userId'
       requestBody:
         description: The photo itself
         content:
@@ -1131,6 +1105,9 @@ paths:
         
   /users/{userId}/photos/{photoId}:
     description: A photo of a user
+    parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/photoId'
 
     get:
       tags: ["photo"]
@@ -1141,9 +1118,6 @@ paths:
         The userId of the user who is requesting is taken from the bearer token.
         The photo owner and photoId is passed as a path parameter.
         The response will return the image file.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/photoId'
       responses:
         "200":
           $ref: '#/components/responses/image'
@@ -1163,9 +1137,6 @@ paths:
         The userId of the user who is requesting is taken from the bearer token. (only the uploader can request a deletion)
         The photo owner and photoId is passed as a path parameter.
         The response will return the image file.
-      parameters:
-        - $ref: '#/components/parameters/userId'
-        - $ref: '#/components/parameters/photoId'
       responses:
         "200":
           $ref: '#/components/responses/Ok'
@@ -1179,17 +1150,17 @@ paths:
   /users/{userId}/feed:
     description: This endpoint is used to get the feed of an user
                   i.e. ther  stream of posts of the following users
-    
+    parameters:
+        - $ref: '#/components/parameters/userId'
+
     get:
       tags: ["feed"]
-      operationId: getFeed
+      operationId: getMyStream
       summary: Get the feed of a user
       description: |
         This request is used to get the feed of a user.
         The userId of the user who is requesting is taken from the bearer token.
         The response will return the stream of posts of the following users.
-      parameters:
-        - $ref: '#/components/parameters/userId'
       responses:
         "200":
           description: The feed of the user who is requesting
@@ -1201,7 +1172,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         "500": #server error
           $ref: '#/components/responses/InternalServerError'    
-
 
 security:
   - bearerAuth: [] 
