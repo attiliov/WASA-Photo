@@ -382,7 +382,6 @@ components:
           schema:
             $ref: '#/components/schemas/username'
 
-
 paths:
  
   /session:
@@ -1173,7 +1172,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         "500": #server error
           $ref: '#/components/responses/InternalServerError'    
-
 
 security:
   - bearerAuth: [] 
