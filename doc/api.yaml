@@ -59,7 +59,7 @@ components:
       type: string
       minLength: 4
       maxLength: 20
-      pattern: '^a-zA-Z0-9_-!$'
+      pattern: '^[a-zA-Z0-9_-]+$'
       readOnly: true
       example: mariorossi99
 
@@ -80,6 +80,9 @@ components:
     caption:
       description: A caption for a post or a comment
       type: string
+      minLength: 1
+      maxLength: 800
+      pattern: '.*'
       example: "This is a caption"
       readOnly: false
     
@@ -202,6 +205,9 @@ components:
       properties:
         message:
           type: string
+          minLength: 1
+          maxLength: 100
+          pattern: '^[a-zA-Z0-9_-]$'
       required:
         - message
     
@@ -211,6 +217,9 @@ components:
       properties:
         message:
           type: string
+          minLength: 1
+          maxLength: 100
+          pattern: '^[a-zA-Z0-9_-]$'
         body:
           type: object
       required:
