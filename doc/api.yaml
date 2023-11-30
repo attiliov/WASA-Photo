@@ -140,7 +140,7 @@ components:
       properties:
         postId:
           $ref: '#/components/schemas/resourceId'
-        author:
+        authorUsername:
           $ref: '#/components/schemas/username'
         creationDate:
           $ref: '#/components/schemas/date'
@@ -154,6 +154,7 @@ components:
           $ref: '#/components/schemas/counter'
       required:
         - postId
+        - authorUsername
         - creationDate
         - caption
 
@@ -176,7 +177,8 @@ components:
           $ref: '#/components/schemas/counter'
       required:
         - commentId
-        - author
+        - authorId
+        - authorUsername
         - creationDate
         - caption
     
