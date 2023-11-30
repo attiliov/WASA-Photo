@@ -469,7 +469,7 @@ paths:
 
     put: #update user information
       tags: ["user"]
-      operationId: updateMyProfile
+      operationId: setMyUserName #actually updateUserProfile since it will update any profile info
       summary: Update the profile of a user
       description: Updates the given profile
       requestBody:
@@ -645,7 +645,7 @@ paths:
 
     put:
       tags: ["like"]
-      operationId: likePost
+      operationId: likePhoto
       summary: Like a post
       description: |
         This request is like a post.
@@ -664,7 +664,7 @@ paths:
     
     delete:
       tags: ["like"]
-      operationId: unlikePost
+      operationId: unlikePhoto
       summary: Unlike a post
       description: |
         This request is used to remove a like from a post.
@@ -695,7 +695,7 @@ paths:
   
     post:
       tags: ["comment"]
-      operationId: createComment
+      operationId: commentPhoto
       summary: Create a new comment
       description: |
         This request is used to create a new comment.
@@ -781,7 +781,7 @@ paths:
   
     delete: 
       tags: ["comment"]
-      operationId: deleteComment
+      operationId: uncommentPhoto
       summary: Delete a comment
       description:
         This request is used to delete a comment.
@@ -1155,7 +1155,7 @@ paths:
 
     get:
       tags: ["feed"]
-      operationId: getFeed
+      operationId: getMyStream
       summary: Get the feed of a user
       description: |
         This request is used to get the feed of a user.
