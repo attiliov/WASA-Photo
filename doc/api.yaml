@@ -432,7 +432,7 @@ paths:
               schema: 
                 $ref: '#/components/schemas/userCollection'
         "400": #the request body is missing or malformed
-          {$ref: '#/components/responses/BadRequest'}
+          $ref: '#/components/responses/BadRequest'
   
   /users/{userId}:
     description: This endpoints handles a single user.
