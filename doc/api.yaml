@@ -409,6 +409,7 @@ paths:
   
   /users:
     description: This endpoints handles collection of users.
+    
     get:
       tags: ["user"]
       operationId: searchUser
@@ -741,6 +742,7 @@ paths:
       - $ref: '#/components/parameters/userId'
       - $ref: '#/components/parameters/postId'
       - $ref: '#/components/parameters/commentId'
+    
     get:
       tags: ["comment"]
       operationId: getComment
@@ -912,29 +914,6 @@ paths:
     parameters:
       - $ref: '#/components/parameters/userId'
 
-    post: 
-      tags: ["follow"]
-      operationId: followUser
-      summary: Follow a user
-      description: |
-        This request is used to follow a user.
-        The userId of the user to follow is passed as a path parameter.
-        The userId of the user who is following is taken from the bearer token.
-        The response will retun the new list of followers of the user.
-      responses:
-        "201":
-          description: The new list of followers of the user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/userCollection'
-        "404": #user not found
-          $ref: '#/components/responses/NotFound'
-        "500": #server error
-          $ref: '#/components/responses/InternalServerError'
-        "401": #unauthorized
-          $ref: '#/components/responses/Unauthorized'
-
     get:
       tags: ["follow"]
       operationId: getFollowing
@@ -965,6 +944,29 @@ paths:
       - $ref: '#/components/parameters/userId'
       - $ref: '#/components/parameters/followingId'
 
+    put:
+      tags: ["follow"]
+      operationId: followUser
+      summary: Follow a user
+      description: |
+        This request is used to follow a user.
+        The userId of the user to follow is passed as a path parameter.
+        The userId of the user who is following is taken from the bearer token.
+        The response will retun the new list of followers of the user.
+      responses:
+        "201":
+          description: The new list of followers of the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userCollection'
+        "404": #user not found
+          $ref: '#/components/responses/NotFound'
+        "500": #server error
+          $ref: '#/components/responses/InternalServerError'
+        "401": #unauthorized
+          $ref: '#/components/responses/Unauthorized'
+
     delete:
       tags: ["follow"]
       operationId: unfollowUser
@@ -993,31 +995,6 @@ paths:
     parameters:
       - $ref: '#/components/parameters/userId'
 
-    post: 
-      tags: ["ban"]
-      operationId: banUser
-      summary: Ban a user
-      description: |
-        This request is used to ban a user.
-        The userId of the user to ban is passed in the request body.
-        The userId of the user who is banning is taken from the path.
-        The response will retun the new list of banned users of the user.
-      requestBody:
-        $ref: '#/components/requestBodies/username'
-      responses:
-        "201":
-          description: The new list of banned users of the user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/userCollection'
-        "404": #user not found
-          $ref: '#/components/responses/NotFound'
-        "401": #unauthorized
-          $ref: '#/components/responses/Unauthorized'
-        "500": #server error
-          $ref: '#/components/responses/InternalServerError'
-
     get: 
       tags: ["ban"]
       operationId: getBannedUsers
@@ -1043,7 +1020,30 @@ paths:
     parameters:
         - $ref: '#/components/parameters/userId'
         - $ref: '#/components/parameters/bannedId'
-  
+
+    put:
+      tags: ["ban"]
+      operationId: banUser
+      summary: Ban a user
+      description: |
+        This request is used to ban a user.
+        The userId of the user to ban is passed as a path parameter.
+        The userId of the user who is banning is taken from the bearer token.
+        The response will retun the new list of banned users of the user.
+      responses:
+        "201":
+          description: The new list of banned users of the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userCollection'
+        "401": #unauthorized
+          $ref: '#/components/responses/Unauthorized'
+        "404": #user not found
+          $ref: '#/components/responses/NotFound'
+        "500": #server error
+          $ref: '#/components/responses/InternalServerError'
+    
     delete:
       tags: ["ban"]
       operationId: unbanUser
