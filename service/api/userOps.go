@@ -6,7 +6,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-/* 
+/*
 	This file contains the handlers for the API endpoints that are used to interact with the user database.
    	i.e. the following endpoints:
 	   - GET /users
@@ -74,6 +74,16 @@ func (rt *_router) updateUserProfile(w http.ResponseWriter, r *http.Request, ps 
 		return
 	}
 
+	// Check that the beaer in the body matches the user ID in the URL (authorized operation)
+	beaerToken, err := getBearerToken(r)
+	if err != nil || beaerToken != userID {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+
+
 	// Update the user with the specified ID
 	err = rt.db.updateUser(userID, user)
 	if err != nil {
@@ -92,8 +102,16 @@ func (rt *_router) deleteUserProfile(w http.ResponseWriter, r *http.Request, ps 
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
 
+	// Check that the beaer in the body matches the user ID in the URL (authorized operation)
+	beaerToken, err := getBearerToken(r)
+	if err != nil || beaerToken != userID {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	// Delete the user with the specified ID
-	err := rt.db.deleteUser(userID)
+	err = rt.db.deleteUser(userID)
 	if err != nil {
 		// If there was an error deleting the user, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
