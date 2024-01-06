@@ -13,8 +13,8 @@ func (rt *_router) Handler() http.Handler {
 
 	rt.router.POST("/session", rt.getAuthToken)
 
-	rt.router.GET("/users", rt.getUsersList)
-
+	rt.router.GET("/users", rt.searchUser)
+	
 	rt.router.GET("/users/:userId", rt.getUserProfile)
 	rt.router.PUT("/users/:userId", rt.updateUserProfile)
 	rt.router.DELETE("/users/:userId", rt.deleteUserProfile)
