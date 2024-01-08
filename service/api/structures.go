@@ -74,3 +74,13 @@ type Success struct {
 	Message string      `json:"message"`
 	Body    interface{} `json:"body"`
 }
+
+type Like struct {
+	Resource ResourceID `json:"likeId"`		//The post or the comment
+	UserID        ResourceID `json:"userId"`
+	Username      Username   `json:"username"`
+}
+
+type LikeCollection struct {
+	Likes []Like `json:"likes"`
+}
