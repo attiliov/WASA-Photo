@@ -18,8 +18,6 @@ import (
 */
 
 func (rt *_router) getPostLikes(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Get the user ID from the URL
-	userID := ps.ByName("userId")
 
 	// Get the post ID from the URL
 	postID := ps.ByName("postId")
@@ -88,6 +86,86 @@ func (rt *_router) unlikePost(w http.ResponseWriter, r *http.Request, ps httprou
 
 	// Like the post
 	err = rt.db.unlikePost(postID, likerID)
+	if err != nil {
+		// If there was an error liking the post, return a 500 status
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Set the header and write the response body
+	w.WriteHeader(http.StatusOK)
+	return
+}
+
+func (rt *_router) getCommentLikes(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+
+	// Get the comment ID from the URL
+	commentID := ps.ByName("commentId")
+
+	// Get the likes of the specified post
+	likes, err := rt.db.getCommentLikes(commentID)
+	if err != nil {
+		// If there was an error getting the likes, return a 500 status
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Create a response object
+	response := LikeCollection{Likes: likes}
+
+	// Set the header and write the response body
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
+func (rt *_router) likeComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+
+	// Get the comment ID from the URL
+	commentID := ps.ByName("commentId")
+
+	// Get the like ID from the URL (the user id of the liker)
+	likerID := ps.ByName("likeId")
+
+	// Check authorization i.e. likerID == bearerToken
+	beaerToken, err := getBearerToken(r)
+	if err != nil || beaerToken != likerID {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	// Like the post
+	err = rt.db.likeComment(commentID, likerID)
+	if err != nil {
+		// If there was an error liking the post, return a 500 status
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Set the header and write the response body
+	w.WriteHeader(http.StatusOK)
+	return
+
+}
+
+func (rt *_router) unlikeComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	
+	// Get the comment ID from the URL
+	commentID := ps.ByName("commentId")
+
+	// Get the like ID from the URL (the user id of the liker)
+	likerID := ps.ByName("likeId")
+
+	// Check authorization i.e. likerID == bearerToken
+	beaerToken, err := getBearerToken(r)
+	if err != nil || beaerToken != likerID {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	// Like the post
+	err = rt.db.unlikeComment(commentID, likerID)
 	if err != nil {
 		// If there was an error liking the post, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
