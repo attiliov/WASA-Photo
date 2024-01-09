@@ -34,6 +34,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
+	"runtime"
 )
 
 // AppDatabase is the high level interface for the DB
@@ -61,16 +64,25 @@ func New(db *sql.DB) (AppDatabase, error) {
 		return nil, errors.New("database is required when building a AppDatabase")
 	}
 
-	// Check if table exists. If not, the database is empty, and we need to create the structure
-	var tableName string
-	err := db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='example_table';`).Scan(&tableName)
-	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE example_table (id INTEGER NOT NULL PRIMARY KEY, name TEXT);`
-		_, err = db.Exec(sqlStmt)
-		if err != nil {
-			return nil, fmt.Errorf("error creating database structure: %w", err)
-		}
-	}
+	// ---Initialize the database
+	
+	// Get the directory of the current file
+    _, filename, _, ok := runtime.Caller(0)
+    if !ok {
+        return nil, errors.New("unable to get current directory")
+    }
+    dir := filepath.Dir(filename)
+    // Read the init.sql file
+    initSQL, err := os.ReadFile(filepath.Join(dir, "init.sql"))
+	if err != nil {
+        return nil, fmt.Errorf("error reading init.sql: %w", err)
+    }
+    // Execute the SQL statements
+    _, err = db.Exec(string(initSQL))
+    if err != nil {
+        return nil, fmt.Errorf("error creating database structure: %w", err)
+    }
+
 	
 	return &appdbimpl{
 		c: db,

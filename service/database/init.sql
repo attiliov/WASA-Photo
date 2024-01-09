@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS User (
     id VARCHAR(36) PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
-    signup_date VARCHAR(10) NOT NULL,
-    last_seen VARCHAR(10) NOT NULL,
+    signup_date DATETIME NOT NULL,
+    last_seen DATETIME NOT NULL,
     email VARCHAR(255) DEFAULT NULL,    
     bio TEXT DEFAULT "",
     prifile_image_id VARCHAR(36) DEFAULT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Post (
     id VARCHAR(36) PRIMARY KEY,
     author_id VARCHAR(36) NOT NULL,
     author_username VARCHAR(255) NOT NULL,
-    creation_date VARCHAR(10) NOT NULL,
+    creation_date DATETIME NOT NULL,
     caption VARCHAR(5000) NOT NULL,
     image_id VARCHAR(36) NOT NULL DEFAULT "",
     like_count INT NOT NULL DEFAULT 0,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS Comment (
     user_id VARCHAR(36) NOT NULL,
     post_id VARCHAR(36) NOT NULL,
     caption VARCHAR(1000) NOT NULL,
-    creation_date VARCHAR(10) NOT NULL,
+    creation_date DATETIME NOT NULL,
     like_count INT NOT NULL DEFAULT 0
 );
 
@@ -59,6 +59,8 @@ CREATE TABLE IF NOT EXISTS Photo (
 ALTER TABLE User ADD FOREIGN KEY(prifile_image_id) REFERENCES Photo(id);
 ALTER TABLE Post ADD FOREIGN KEY(author_id) REFERENCES User(id);
 ALTER TABLE Post ADD FOREIGN KEY(author_username) REFERENCES User(username);
+ALTER TABLE Post ADD FOREIGN KEY(image_id) REFERENCES Photo(id);
+ALTER TABLE Post ADD FOREIGN KEY(author_id) REFERENCES User(id);
 ALTER TABLE Comment ADD FOREIGN KEY(user_id) REFERENCES User(id);
 ALTER TABLE Comment ADD FOREIGN KEY(post_id) REFERENCES Post(id);
 ALTER TABLE PostLike ADD FOREIGN KEY(user_id) REFERENCES User(id);
