@@ -17,6 +17,14 @@ func (rt *_router) getFeed(w http.ResponseWriter, r *http.Request, ps httprouter
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
 
+	// Check authorization (a user can request only their own feed)
+	beaerToken, err := getBearerToken(r)
+	if err != nil {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	// Get the user feed
 	feed, err := rt.db.getUserFeed(userID)
 	if err != nil {

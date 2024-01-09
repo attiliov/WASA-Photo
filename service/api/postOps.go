@@ -20,6 +20,19 @@ func (rt *_router) getUserPosts(w http.ResponseWriter, r *http.Request, ps httpr
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
 
+	// Check that that the bearer is not banned from post owner
+	beaerToken, err := getBearerToken(r)
+	if err != nil {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	banned, err := rt.db.isBanned(userID, beaerToken) // isBanned(userID, beaerToken) returns true if the bearer is banned from the user with the given ID
+	if err != nil || banned {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	// Get the posts of the specified user
 	posts_id, err := rt.db.getUserPosts(userID) // getUserPosts(userID) returns the list of post IDs of the given user
 	if err != nil {
@@ -78,6 +91,19 @@ func (rt *_router) getPost(w http.ResponseWriter, r *http.Request, ps httprouter
 	// Get the user ID and post ID from the URL
 	userID := ps.ByName("userId")
 	postID := ps.ByName("postId")
+
+	// Check that that the bearer is not banned from post owner
+	beaerToken, err := getBearerToken(r)
+	if err != nil {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	banned, err := rt.db.isBanned(userID, beaerToken) // isBanned(userID, beaerToken) returns true if the bearer is banned from the user with the given ID
+	if err != nil || banned {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 
 	// Get the post with the specified ID
 	post, err := rt.db.getPost(userID, postID) // getPost(userID, postID) returns the post with the given ID

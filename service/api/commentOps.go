@@ -22,6 +22,23 @@ func (rt *_router) getPostComments(w http.ResponseWriter, r *http.Request, ps ht
 	// Get the post ID from the URL
 	postID := ps.ByName("postId")
 
+	// Get the user ID from the URL
+	userID := ps.ByName("userId")
+
+	// Check that the user requesting the comments is not banned from the post owner
+	requesterId, err := getBearerToken(r)
+	if err != nil {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	banned, err := rt.db.isBanned(userID, requesterId)
+	if err != nil || banned {
+		// If there was an error checking if the user is banned, return a 500 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	// Get the comments of the specified post
 	comments, err := rt.db.getPostComments(postID)
 	if err != nil {
@@ -29,6 +46,7 @@ func (rt *_router) getPostComments(w http.ResponseWriter, r *http.Request, ps ht
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	
 
 	// Create a response object
 	response := CommentStream{Comments: comments}
@@ -81,6 +99,23 @@ func (rt *_router) getComment(w http.ResponseWriter, r *http.Request, ps httprou
 	// Get the comment ID from the URL
 	commentID := ps.ByName("commentId")
 
+	// Get the user ID from the URL
+	userID := ps.ByName("userId")
+
+	// Check that the user requesting the comments is not banned from the post owner
+	requesterId, err := getBearerToken(r)
+	if err != nil {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	banned, err := rt.db.isBanned(userID, requesterId)
+	if err != nil || banned {
+		// If there was an error checking if the user is banned, return a 500 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	
 	// Get the comment
 	comment, err := rt.db.getComment(commentID)
 	if err != nil {

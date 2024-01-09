@@ -20,6 +20,21 @@ func (rt *_router) getFollowersList(w http.ResponseWriter, r *http.Request, ps h
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
 
+	// Check authorization (bearer token not banned from user)
+	beaerToken, err := getBearerToken(r)
+	if err != nil {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	banned, err := rt.db.isBanned(userID, beaerToken)
+	if err != nil || banned {
+		// If there was an error checking if the user is banned, return a 500 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+
 	// Get the followers of the specified user
 	followers, err := rt.db.getFollowersList(userID)
 	if err != nil {
@@ -40,6 +55,20 @@ func (rt *_router) getFollowingsList(w http.ResponseWriter, r *http.Request, ps 
 	
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
+
+	// Check authorization (bearer token not banned from user)
+	beaerToken, err := getBearerToken(r)
+	if err != nil {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	banned, err := rt.db.isBanned(userID, beaerToken)
+	if err != nil || banned {
+		// If there was an error checking if the user is banned, return a 500 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 
 	// Get the followings of the specified user
 	followings, err := rt.db.getFollowingsList(userID)

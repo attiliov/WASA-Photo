@@ -47,6 +47,20 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
 
+	// Check that thwe reqeuster is not banned from the userID
+	beaerToken, err := getBearerToken(r)
+	if err != nil {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	banned, err := rt.db.isBanned(userID, beaerToken) // isBanned(userID, beaerToken) returns true if the bearer is banned from the user with the given ID
+	if err != nil || banned {
+		// If there was an error getting the banned status, return unauthorized
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	// Get the user with the specified ID
 	user, err := rt.db.getUser(userID)
 	if err != nil {

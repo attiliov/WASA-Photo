@@ -20,13 +20,13 @@ func (rt *_router) getAuthToken(w http.ResponseWriter, r *http.Request, _ httpro
         w.WriteHeader(http.StatusBadRequest)
         return
     }
-
+    
     // Get the user from the database
-    user, err := rt.db.getUserFromDB(username)
+    user, err := rt.db.GetUserFromDB(username)
 
     // If the user doesn't exist, create a new user
     if err != nil {
-        user, err = rt.db.createUserInDB(username)
+        user, err = rt.db.CreateUserInDB(username)
         if err != nil {
             // If there was an error creating the user, return a 500 status
             w.WriteHeader(http.StatusInternalServerError)
@@ -41,5 +41,5 @@ func (rt *_router) getAuthToken(w http.ResponseWriter, r *http.Request, _ httpro
 
     // Return the user's ID in the response body
     w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(ResourceID{Value: user.UserID})
+    json.NewEncoder(w).Encode(user.UserID)
 }

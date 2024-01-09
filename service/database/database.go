@@ -41,6 +41,12 @@ type AppDatabase interface {
 	GetName() (string, error)
 	SetName(name string) error
 
+	GetUserFromDB(username string) (User, error)
+	CreateUserInDB(username string) (User, error)
+
+	
+
+
 	Ping() error
 }
 
@@ -65,7 +71,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
 		}
 	}
-
+	
 	return &appdbimpl{
 		c: db,
 	}, nil

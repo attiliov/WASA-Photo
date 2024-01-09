@@ -22,6 +22,23 @@ func (rt *_router) getPostLikes(w http.ResponseWriter, r *http.Request, ps httpr
 	// Get the post ID from the URL
 	postID := ps.ByName("postId")
 
+	// Get the user ID from the URL
+	userID := ps.ByName("userId")
+
+	// Check authorization (bearer token not banned from post owner)
+	beaerToken, err := getBearerToken(r)
+	if err != nil {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	banned, err := rt.db.isBanned(userID, beaerToken)
+	if err != nil || banned {
+		// If there was an error checking if the user is banned, return a 500 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	// Get the likes of the specified post
 	likes, err := rt.db.getPostLikes(postID)
 	if err != nil {
@@ -101,6 +118,23 @@ func (rt *_router) getCommentLikes(w http.ResponseWriter, r *http.Request, ps ht
 
 	// Get the comment ID from the URL
 	commentID := ps.ByName("commentId")
+
+	// Get the user ID from the URL
+	userID := ps.ByName("userId")
+
+	// Check authorization (bearer token not banned from comment owner)
+	beaerToken, err := getBearerToken(r)
+	if err != nil {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	banned, err := rt.db.isBanned(userID, beaerToken)
+	if err != nil || banned {
+		// If there was an error checking if the user is banned, return a 500 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 
 	// Get the likes of the specified post
 	likes, err := rt.db.getCommentLikes(commentID)
