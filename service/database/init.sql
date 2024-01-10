@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS User (
     username VARCHAR(255) UNIQUE NOT NULL,
     signup_date DATETIME NOT NULL,
     last_seen DATETIME NOT NULL,
-    email VARCHAR(255) DEFAULT NULL,    
+    email VARCHAR(255) DEFAULT NULL,
     bio TEXT DEFAULT "",
     prifile_image_id VARCHAR(36) DEFAULT NULL,
     followers_count INT NOT NULL DEFAULT 0,

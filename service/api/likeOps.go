@@ -3,6 +3,8 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/attiliov/WASA-Photo/service/structs"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -32,7 +34,7 @@ func (rt *_router) getPostLikes(w http.ResponseWriter, r *http.Request, ps httpr
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	banned, err := rt.db.isBanned(userID, beaerToken)
+	banned, err := rt.db.IsBanned(userID, beaerToken)
 	if err != nil || banned {
 		// If there was an error checking if the user is banned, return a 500 status
 		w.WriteHeader(http.StatusUnauthorized)
@@ -40,7 +42,7 @@ func (rt *_router) getPostLikes(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	// Get the likes of the specified post
-	likes, err := rt.db.getPostLikes(postID)
+	likes, err := rt.db.GetPostLikes(postID)
 	if err != nil {
 		// If there was an error getting the likes, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -48,7 +50,7 @@ func (rt *_router) getPostLikes(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	// Create a response object
-	response := LikeCollection{Likes: likes}
+	response := structs.LikeCollection{Likes: likes}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
@@ -73,7 +75,7 @@ func (rt *_router) likePost(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 
 	// Like the post
-	err = rt.db.likePost(postID, likerID)
+	err = rt.db.LikePost(postID, likerID)
 	if err != nil {
 		// If there was an error liking the post, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -102,7 +104,7 @@ func (rt *_router) unlikePost(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Like the post
-	err = rt.db.unlikePost(postID, likerID)
+	err = rt.db.UnlikePost(postID, likerID)
 	if err != nil {
 		// If there was an error liking the post, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -129,7 +131,7 @@ func (rt *_router) getCommentLikes(w http.ResponseWriter, r *http.Request, ps ht
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	banned, err := rt.db.isBanned(userID, beaerToken)
+	banned, err := rt.db.IsBanned(userID, beaerToken)
 	if err != nil || banned {
 		// If there was an error checking if the user is banned, return a 500 status
 		w.WriteHeader(http.StatusUnauthorized)
@@ -137,7 +139,7 @@ func (rt *_router) getCommentLikes(w http.ResponseWriter, r *http.Request, ps ht
 	}
 
 	// Get the likes of the specified post
-	likes, err := rt.db.getCommentLikes(commentID)
+	likes, err := rt.db.GetCommentLikes(commentID)
 	if err != nil {
 		// If there was an error getting the likes, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -145,7 +147,7 @@ func (rt *_router) getCommentLikes(w http.ResponseWriter, r *http.Request, ps ht
 	}
 
 	// Create a response object
-	response := LikeCollection{Likes: likes}
+	response := structs.LikeCollection{Likes: likes}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
@@ -169,7 +171,7 @@ func (rt *_router) likeComment(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Like the post
-	err = rt.db.likeComment(commentID, likerID)
+	err = rt.db.LikeComment(commentID, likerID)
 	if err != nil {
 		// If there was an error liking the post, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -199,7 +201,7 @@ func (rt *_router) unlikeComment(w http.ResponseWriter, r *http.Request, ps http
 	}
 
 	// Like the post
-	err = rt.db.unlikeComment(commentID, likerID)
+	err = rt.db.UnlikeComment(commentID, likerID)
 	if err != nil {
 		// If there was an error liking the post, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)

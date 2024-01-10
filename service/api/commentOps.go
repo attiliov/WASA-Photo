@@ -3,6 +3,8 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/attiliov/WASA-Photo/service/structs"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -32,7 +34,7 @@ func (rt *_router) getPostComments(w http.ResponseWriter, r *http.Request, ps ht
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	banned, err := rt.db.isBanned(userID, requesterId)
+	banned, err := rt.db.IsBanned(userID, requesterId)
 	if err != nil || banned {
 		// If there was an error checking if the user is banned, return a 500 status
 		w.WriteHeader(http.StatusUnauthorized)
@@ -40,7 +42,7 @@ func (rt *_router) getPostComments(w http.ResponseWriter, r *http.Request, ps ht
 	}
 
 	// Get the comments of the specified post
-	comments, err := rt.db.getPostComments(postID)
+	comments, err := rt.db.GetPostComments(postID)
 	if err != nil {
 		// If there was an error getting the comments, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -49,7 +51,7 @@ func (rt *_router) getPostComments(w http.ResponseWriter, r *http.Request, ps ht
 	
 
 	// Create a response object
-	response := CommentStream{Comments: comments}
+	response := structs.CommentStream{Comments: comments}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
@@ -73,7 +75,7 @@ func (rt *_router) createComment(w http.ResponseWriter, r *http.Request, ps http
 	}
 
 	// Get the comment from the request body
-	var comment Comment
+	var comment structs.Comment
 	err = json.NewDecoder(r.Body).Decode(&comment)
 	if err != nil {
 		// If there was an error decoding the request body, return a 400 status
@@ -81,8 +83,15 @@ func (rt *_router) createComment(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
+	// Check that authorId is the same as bearer token
+	if comment.AuthorID.Value != beaerToken {
+		// If the authorId is not the same as the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	// Create the comment
-	err = rt.db.createComment(userID, postID, comment)
+	err = rt.db.CreateComment(postID ,comment)
 	if err != nil {
 		// If there was an error creating the comment, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -109,7 +118,7 @@ func (rt *_router) getComment(w http.ResponseWriter, r *http.Request, ps httprou
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	banned, err := rt.db.isBanned(userID, requesterId)
+	banned, err := rt.db.IsBanned(userID, requesterId)
 	if err != nil || banned {
 		// If there was an error checking if the user is banned, return a 500 status
 		w.WriteHeader(http.StatusUnauthorized)
@@ -117,7 +126,7 @@ func (rt *_router) getComment(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 	
 	// Get the comment
-	comment, err := rt.db.getComment(commentID)
+	comment, err := rt.db.GetComment(commentID)
 	if err != nil {
 		// If there was an error getting the comment, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -125,7 +134,7 @@ func (rt *_router) getComment(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Create a response object
-	response := Success{Message: "Comment retrieved successfully", Body: comment}
+	response := structs.Success{Message: "Comment retrieved successfully", Body: comment}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
@@ -149,7 +158,7 @@ func (rt *_router) editComment(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Get the comment from the request body
-	var comment Comment
+	var comment structs.Comment
 	err = json.NewDecoder(r.Body).Decode(&comment)
 	if err != nil {
 		// If there was an error decoding the request body, return a 400 status
@@ -158,7 +167,7 @@ func (rt *_router) editComment(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Edit the comment
-	err = rt.db.editComment(commentID, comment)
+	err = rt.db.EditComment(commentID, comment)
 	if err != nil {
 		// If there was an error editing the comment, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -186,7 +195,7 @@ func (rt *_router) deleteComment(w http.ResponseWriter, r *http.Request, ps http
 	}
 
 	// Delete the comment
-	err = rt.db.deleteComment(commentID)
+	err = rt.db.DeleteComment(commentID)
 	if err != nil {
 		// If there was an error deleting the comment, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)

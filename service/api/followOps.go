@@ -3,6 +3,8 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/attiliov/WASA-Photo/service/structs"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -27,7 +29,7 @@ func (rt *_router) getFollowersList(w http.ResponseWriter, r *http.Request, ps h
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	banned, err := rt.db.isBanned(userID, beaerToken)
+	banned, err := rt.db.IsBanned(userID, beaerToken)
 	if err != nil || banned {
 		// If there was an error checking if the user is banned, return a 500 status
 		w.WriteHeader(http.StatusUnauthorized)
@@ -36,7 +38,7 @@ func (rt *_router) getFollowersList(w http.ResponseWriter, r *http.Request, ps h
 
 
 	// Get the followers of the specified user
-	followers, err := rt.db.getFollowersList(userID)
+	followers, err := rt.db.GetFollowersList(userID)
 	if err != nil {
 		// If there was an error getting the followers, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -44,7 +46,7 @@ func (rt *_router) getFollowersList(w http.ResponseWriter, r *http.Request, ps h
 	}
 
 	// Create a response object
-	response := UserCollection{Users: followers}
+	response := structs.UserCollection{Users: followers}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
@@ -63,7 +65,7 @@ func (rt *_router) getFollowingsList(w http.ResponseWriter, r *http.Request, ps 
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	banned, err := rt.db.isBanned(userID, beaerToken)
+	banned, err := rt.db.IsBanned(userID, beaerToken)
 	if err != nil || banned {
 		// If there was an error checking if the user is banned, return a 500 status
 		w.WriteHeader(http.StatusUnauthorized)
@@ -71,7 +73,7 @@ func (rt *_router) getFollowingsList(w http.ResponseWriter, r *http.Request, ps 
 	}
 
 	// Get the followings of the specified user
-	followings, err := rt.db.getFollowingsList(userID)
+	followings, err := rt.db.GetFollowingsList(userID)
 	if err != nil {
 		// If there was an error getting the followings, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -79,7 +81,7 @@ func (rt *_router) getFollowingsList(w http.ResponseWriter, r *http.Request, ps 
 	}
 
 	// Create a response object
-	response := UserCollection{Users: followings}
+	response := structs.UserCollection{Users: followings}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
@@ -103,7 +105,7 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Follow the specified user
-	err = rt.db.followUser(userID, followingID)
+	err = rt.db.FollowUser(userID, followingID)
 	if err != nil {
 		// If there was an error following the user, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -111,7 +113,7 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Create a response object
-	response := Success{Message: "Successfully followed user"}
+	response := structs.Success{Message: "Successfully followed user"}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
@@ -135,7 +137,7 @@ func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	// Unfollow the specified user
-	err = rt.db.unfollowUser(userID, followingID)
+	err = rt.db.UnfollowUser(userID, followingID)
 	if err != nil {
 		// If there was an error unfollowing the user, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -143,7 +145,7 @@ func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	// Create a response object
-	response := Success{Message: "Successfully unfollowed user"}
+	response := structs.Success{Message: "Successfully unfollowed user"}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")

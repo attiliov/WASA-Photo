@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"github.com/julienschmidt/httprouter"
+	"github.com/attiliov/WASA-Photo/service/structs"
 )
 
 /*
@@ -27,14 +28,14 @@ func (rt *_router) getUserPosts(w http.ResponseWriter, r *http.Request, ps httpr
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	banned, err := rt.db.isBanned(userID, beaerToken) // isBanned(userID, beaerToken) returns true if the bearer is banned from the user with the given ID
+	banned, err := rt.db.IsBanned(userID, beaerToken) // isBanned(userID, beaerToken) returns true if the bearer is banned from the user with the given ID
 	if err != nil || banned {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	// Get the posts of the specified user
-	posts_id, err := rt.db.getUserPosts(userID) // getUserPosts(userID) returns the list of post IDs of the given user
+	posts_id, err := rt.db.GetUserPosts(userID) // getUserPosts(userID) returns the list of post IDs of the given user
 	if err != nil {
 		// If there was an error getting the posts, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -42,7 +43,7 @@ func (rt *_router) getUserPosts(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	// Create a response object
-	response := PostStream{Posts: posts_id}
+	response := structs.PostStream{Posts: posts_id}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
@@ -54,7 +55,7 @@ func (rt *_router) createPost(w http.ResponseWriter, r *http.Request, ps httprou
 	userID := ps.ByName("userId")
 
 	// Parse and decode the request body into a Post object
-	var post UserPost
+	var post structs.UserPost
 	err := json.NewDecoder(r.Body).Decode(&post)
 	if err != nil {
 		// If there is something wrong with the request body, return a 400 status
@@ -71,7 +72,7 @@ func (rt *_router) createPost(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Create a new post in the database
-	post_id, err := rt.db.addPost(userID, post) // createPost(userID, post) returns the post ID of the created post
+	post_id, err := rt.db.AddPost(userID, post) // createPost(userID, post) returns the post ID of the created post
 	if err != nil {
 		// If there was an error creating the post, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -79,7 +80,7 @@ func (rt *_router) createPost(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Create a response object
-	response := Success{Message: "Post created successfully", Body: post_id}
+	response := structs.Success{Message: "Post created successfully", Body: post_id}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
@@ -99,22 +100,16 @@ func (rt *_router) getPost(w http.ResponseWriter, r *http.Request, ps httprouter
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	banned, err := rt.db.isBanned(userID, beaerToken) // isBanned(userID, beaerToken) returns true if the bearer is banned from the user with the given ID
+	banned, err := rt.db.IsBanned(userID, beaerToken) // isBanned(userID, beaerToken) returns true if the bearer is banned from the user with the given ID
 	if err != nil || banned {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	// Get the post with the specified ID
-	post, err := rt.db.getPost(userID, postID) // getPost(userID, postID) returns the post with the given ID
+	post, err := rt.db.GetPost(postID) // getPost(userID, postID) returns the post with the given ID
 	if err != nil {
-		// If there was an error getting the post, return a 500 status
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// If the post does not exist, return a 404 status
-	if post == nil {
+		// If there was an error getting the post, return a 404 status
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -131,7 +126,7 @@ func (rt *_router) editPost(w http.ResponseWriter, r *http.Request, ps httproute
 	postID := ps.ByName("postId")
 
 	// Parse and decode the request body into a Post object
-	var post UserPost
+	var post structs.UserPost
 	err := json.NewDecoder(r.Body).Decode(&post)
 	if err != nil {
 		// If there is something wrong with the request body, return a 400 status
@@ -148,7 +143,7 @@ func (rt *_router) editPost(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 
 	// Update the post with the specified ID
-	err = rt.db.updatePost(postID, post) // updatePost(postID, post) returns an error if the post does not exist
+	err = rt.db.UpdatePost(postID, post) // updatePost(postID, post) returns an error if the post does not exist
 	if err != nil {
 		// If there was an error updating the post, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -156,7 +151,7 @@ func (rt *_router) editPost(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 
 	// Create a response object
-	response := Success{Message: "Post updated successfully"}
+	response := structs.Success{Message: "Post updated successfully"}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
@@ -178,7 +173,7 @@ func (rt *_router) deletePost(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Delete the post with the specified ID
-	err = rt.db.deletePost(postID) // deletePost(postID) returns an error if the post does not exist
+	err = rt.db.DeletePost(postID) // deletePost(postID) returns an error if the post does not exist
 	if err != nil {
 		// If there was an error deleting the post, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -186,7 +181,7 @@ func (rt *_router) deletePost(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Create a response object
-	response := Success{Message: "Post deleted successfully"}
+	response := structs.Success{Message: "Post deleted successfully"}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")

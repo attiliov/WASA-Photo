@@ -3,6 +3,8 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/attiliov/WASA-Photo/service/structs"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -28,7 +30,7 @@ func (rt *_router) getUserBanList(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	// Get the banned users of the specified user
-	bannedUsers, err := rt.db.getUserBanList(userID)
+	bannedUsers, err := rt.db.GetUserBanList(userID)
 	if err != nil {
 		// If there was an error getting the banned users, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -36,7 +38,7 @@ func (rt *_router) getUserBanList(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	// Create a response object
-	response := UserCollection{Users: bannedUsers}
+	response :=  structs.UserCollection{Users: bannedUsers}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
@@ -60,7 +62,7 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 	}
 
 	// Ban the user
-	err = rt.db.banUser(userID, bannedID)
+	err = rt.db.BanUser(userID, bannedID)
 	if err != nil {
 		// If there was an error banning the user, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -88,7 +90,7 @@ func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprout
 	}
 
 	// Unban the user
-	err = rt.db.unbanUser(userID, bannedID)
+	err = rt.db.UnbanUser(userID, bannedID)
 	if err != nil {
 		// If there was an error unbanning the user, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)

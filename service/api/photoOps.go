@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"net/http"
 	"github.com/julienschmidt/httprouter"
 )
@@ -14,7 +13,7 @@ import (
 		- DELETE /users/:userId/photos/:photoId
 */
 
-func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (rt *_router) savePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
@@ -43,7 +42,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
     defer file.Close()
 
     // Upload the photo
-    err = rt.db.savePhoto(userID, file)
+    err = rt.db.SavePhoto(userID, file)
     if err != nil {
         // If there was an error uploading the photo, return a 500 status
         w.WriteHeader(http.StatusInternalServerError)
@@ -64,7 +63,7 @@ func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httproute
 	// TODO: check if the user is allowed to view the photo (ban)
 
 	// Get the photo
-	photo, err := rt.db.getPhoto(userID, photoID)
+	photo, err := rt.db.GetPhoto(userID, photoID)
 	if err != nil {
 		// If there was an error getting the photo, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -92,7 +91,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Delete the photo
-	err = rt.db.deletePhoto(userID, photoID)
+	err = rt.db.DeletePhoto(userID, photoID)
 	if err != nil {
 		// If there was an error deleting the photo, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)

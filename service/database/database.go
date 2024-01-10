@@ -34,21 +34,59 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"mime/multipart"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
+
+	"github.com/attiliov/WASA-Photo/service/structs"
 )
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-	GetName() (string, error)
-	SetName(name string) error
 
-	GetUserFromDB(username string) (User, error)
-	CreateUserInDB(username string) (User, error)
+	GetUser(username string) (structs.User, error)
+	CreateUser(username string) (structs.User, error)
+	SearchUsername(username string) ([]structs.User, error)
+	UpdateUser(userID string, user structs.User) error
+	DeleteUser(userID string) error
 
-	
+	GetUserPosts(userID string) ([]structs.ResourceID, error)
+	AddPost(userID string, post structs.UserPost) (structs.ResourceID, error)
+	GetPost(postID string) (structs.UserPost, error)
+	UpdatePost(postID string, post structs.UserPost) error
+	DeletePost(postID string) error
 
+	GetPostComments(postID string) ([]structs.Comment, error)
+	CreateComment(postID string, comment structs.Comment) error
+	GetComment(commentID string) (structs.Comment, error)
+	EditComment(commentID string, comment structs.Comment) error
+	DeleteComment(commentID string) error
+
+	GetPostLikes(postID string) ([]structs.Like, error)
+	LikePost(postID string, likerID string) error
+	UnlikePost(postID string, likerID string) error
+
+	GetCommentLikes(commentID string) ([]structs.Like, error)
+	LikeComment(commentID string, likerID string) error
+	UnlikeComment(commentID string, likerID string) error
+
+	GetFollowersList(userID string) ([]structs.User, error)
+	GetFollowingsList(userID string) ([]structs.User, error)
+	FollowUser(userID string, followingID string) error
+	UnfollowUser(userID string, followingID string) error
+
+	IsBanned(userID string, bannedID string) (bool, error)
+	GetUserBanList(userID string) ([]structs.User, error)
+	BanUser(userID string, bannedID string) error
+	UnbanUser(userID string, bannedID string) error
+
+	GetUserFeed(userID string) ([]structs.ResourceID, error)
+
+	SavePhoto(userID string, photo multipart.File) error
+	GetPhoto(userID string, photoID string) ([]byte, error)
+	DeletePhoto(userID string, photoID string) error
 
 	Ping() error
 }
@@ -65,8 +103,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	// ---Initialize the database
-	
-	// Get the directory of the current file
+    // Get the directory of the current file
     _, filename, _, ok := runtime.Caller(0)
     if !ok {
         return nil, errors.New("unable to get current directory")
@@ -74,13 +111,20 @@ func New(db *sql.DB) (AppDatabase, error) {
     dir := filepath.Dir(filename)
     // Read the init.sql file
     initSQL, err := os.ReadFile(filepath.Join(dir, "init.sql"))
-	if err != nil {
+    if err != nil {
         return nil, fmt.Errorf("error reading init.sql: %w", err)
     }
-    // Execute the SQL statements
-    _, err = db.Exec(string(initSQL))
-    if err != nil {
-        return nil, fmt.Errorf("error creating database structure: %w", err)
+    // Split the SQL statements
+    statements := strings.Split(string(initSQL), ";")
+    // Execute each statement
+    for _, statement := range statements {
+        statement = strings.TrimSpace(statement) // remove leading and trailing spaces
+        if statement != "" {
+            _, err = db.Exec(statement)
+            if err != nil {
+                return nil, fmt.Errorf("error executing statement %q: %w", statement, err)
+            }
+        }
     }
 
 	

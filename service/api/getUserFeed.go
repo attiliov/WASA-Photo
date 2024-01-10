@@ -3,6 +3,8 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/attiliov/WASA-Photo/service/structs"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -19,14 +21,14 @@ func (rt *_router) getFeed(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	// Check authorization (a user can request only their own feed)
 	beaerToken, err := getBearerToken(r)
-	if err != nil {
+	if err != nil || userID != beaerToken {
 		// If there was an error getting the bearer token, return a 401 status
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	// Get the user feed
-	feed, err := rt.db.getUserFeed(userID)
+	feed, err := rt.db.GetUserFeed(userID)
 	if err != nil {
 		// If there was an error getting the user feed, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -34,7 +36,7 @@ func (rt *_router) getFeed(w http.ResponseWriter, r *http.Request, ps httprouter
 	}
 
 	// Create a response object
-	response := PostStream{Posts: feed}
+	response := structs.PostStream{Posts: feed}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")

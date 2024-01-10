@@ -1,4 +1,4 @@
-package database
+package structs
 
 type Username struct {
 	Value string `json:"value"`
@@ -21,7 +21,7 @@ type Image struct {
 }
 
 type Counter struct {
-	Count int `json:"count"`
+	Value int `json:"count"`
 }
 
 type UserCollection struct {
@@ -42,6 +42,7 @@ type User struct {
 type UserPost struct {
 	PostID         ResourceID `json:"postId"`
 	AuthorUsername Username   `json:"authorUsername"`
+	AuthorID       ResourceID `json:"authorId"`
 	CreationDate   Date       `json:"creationDate"`
 	Caption        Caption    `json:"caption"`
 	Image          Image      `json:"image"`

@@ -147,6 +147,8 @@ components:
           $ref: '#/components/schemas/resourceId'
         authorUsername:
           $ref: '#/components/schemas/username'
+        authorId:
+          $ref: '#/components/schemas/User/properties/userId'
         creationDate:
           $ref: '#/components/schemas/date'
         caption:

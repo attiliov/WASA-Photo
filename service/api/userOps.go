@@ -3,6 +3,8 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/attiliov/WASA-Photo/service/structs"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -27,7 +29,7 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, _ httprout
 	}
 
 	// Get users with similar usernames
-	users, err := rt.db.searchUsername(username)
+	users, err := rt.db.SearchUsername(username)
 	if err != nil {
 		// If there was an error getting the users, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -35,7 +37,7 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, _ httprout
 	}
 
 	// Create a response object
-	response := UserCollection{Users: users}
+	response := structs.UserCollection{Users: users}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
@@ -54,7 +56,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	banned, err := rt.db.isBanned(userID, beaerToken) // isBanned(userID, beaerToken) returns true if the bearer is banned from the user with the given ID
+	banned, err := rt.db.IsBanned(userID, beaerToken) // isBanned(userID, beaerToken) returns true if the bearer is banned from the user with the given ID
 	if err != nil || banned {
 		// If there was an error getting the banned status, return unauthorized
 		w.WriteHeader(http.StatusUnauthorized)
@@ -62,7 +64,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	// Get the user with the specified ID
-	user, err := rt.db.getUser(userID)
+	user, err := rt.db.GetUser(userID)
 	if err != nil {
 		// User not found, return a 404 status
 		w.WriteHeader(http.StatusNotFound)
@@ -80,7 +82,7 @@ func (rt *_router) updateUserProfile(w http.ResponseWriter, r *http.Request, ps 
 	userID := ps.ByName("userId")
 
 	// Parse and decode the request body into a User object
-	var user User
+	var user structs.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		// If there is something wrong with the request body, return a 400 status
@@ -99,7 +101,7 @@ func (rt *_router) updateUserProfile(w http.ResponseWriter, r *http.Request, ps 
 
 
 	// Update the user with the specified ID
-	err = rt.db.updateUser(userID, user)
+	err = rt.db.UpdateUser(userID, user)
 	if err != nil {
 		// If there was an error updating the user, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
@@ -125,7 +127,7 @@ func (rt *_router) deleteUserProfile(w http.ResponseWriter, r *http.Request, ps 
 	}
 
 	// Delete the user with the specified ID
-	err = rt.db.deleteUser(userID)
+	err = rt.db.DeleteUser(userID)
 	if err != nil {
 		// If there was an error deleting the user, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
