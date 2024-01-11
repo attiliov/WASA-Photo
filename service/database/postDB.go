@@ -16,6 +16,9 @@ import (
 	GetPost(postID string) (structs.UserPost, error)
 	UpdatePost(postID string, post structs.UserPost) error
 	DeletePost(postID string) error
+
+	GetUserFeed(userID string) ([]structs.ResourceID, error)
+
 */
 
 // GetUserPosts returns the posts of the user with the given userID
@@ -47,11 +50,11 @@ func (db *appdbimpl) GetUserPosts(userID string) ([]structs.ResourceID, error) {
 // AddPost adds a new post to the database
 func (db *appdbimpl) AddPost(post structs.UserPost) (structs.ResourceID, error) {
     // Generate a new UUID v4
-    uuid, err := uuid.NewV4()
+    id, err := uuid.NewV4()
     if err != nil {
         return post.PostID, fmt.Errorf("error generating UUID: %w", err)
     }
-    post.PostID.Value = uuid.String()
+    post.PostID.Value = id.String()
 
     // Insert the post in the DB
     _, err = db.c.Exec(`
@@ -126,4 +129,33 @@ func (db *appdbimpl) DeletePost(postID string) error {
 		return fmt.Errorf("error deleting post: %w", err)
 	}
 	return nil
+}
+
+
+// GetUserFeed returns the posts of the users followed by the user with the given userID
+func (db *appdbimpl) GetUserFeed(userID string) ([]structs.ResourceID, error) {
+	var posts []structs.ResourceID
+	rows, err := db.c.Query(`
+	SELECT 
+		Post.id 
+	FROM 
+		Post 
+	INNER JOIN 
+		Follow ON Post.author_id = Follow.following_id 
+	WHERE 
+		Follow.user_id = ?`, 
+	userID)
+	if err != nil {
+		return posts, fmt.Errorf("error getting user feed: %w", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var post structs.ResourceID
+		err := rows.Scan(&post.Value)
+		if err != nil {
+			return posts, fmt.Errorf("error scanning user feed: %w", err)
+		}
+		posts = append(posts, post)
+	}
+	return posts, nil
 }

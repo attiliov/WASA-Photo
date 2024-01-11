@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS Post (
 CREATE TABLE IF NOT EXISTS Comment (
     id VARCHAR(36) PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL,
+    username VARCHAR(255) NOT NULL,
     post_id VARCHAR(36) NOT NULL,
     caption VARCHAR(1000) NOT NULL,
     creation_date DATETIME NOT NULL,
@@ -42,6 +43,12 @@ CREATE TABLE IF NOT EXISTS CommentLike (
     comment_id VARCHAR(36) NOT NULL,
     username VARCHAR(255) NOT NULL,
     PRIMARY KEY(user_id, comment_id)
+);
+
+CREATE TABLE IF NOT EXISTS Follow (
+    follower VARCHAR(36) NOT NULL,
+    following VARCHAR(36) NOT NULL,
+    PRIMARY KEY(follower, following)
 );
 
 CREATE TABLE IF NOT EXISTS Ban (
@@ -70,3 +77,5 @@ ALTER TABLE CommentLike ADD FOREIGN KEY(comment_id) REFERENCES Comment(id);
 ALTER TABLE Ban ADD FOREIGN KEY(user_id) REFERENCES User(id);
 ALTER TABLE Ban ADD FOREIGN KEY(banned_user_id) REFERENCES User(id);
 ALTER TABLE Photo ADD FOREIGN KEY(owner_id) REFERENCES User(id);
+ALTER TABLE Follow ADD FOREIGN KEY(follower) REFERENCES User(id);
+ALTER TABLE Follow ADD FOREIGN KEY(following) REFERENCES User(id);
