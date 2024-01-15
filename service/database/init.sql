@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS User (
     last_seen DATETIME NOT NULL,
     email VARCHAR(255) DEFAULT NULL,
     bio TEXT DEFAULT "",
-    prifile_image_id VARCHAR(36) DEFAULT NULL,
+    profile_image_id VARCHAR(36) DEFAULT NULL,
     followers_count INT NOT NULL DEFAULT 0,
     following_count INT NOT NULL DEFAULT 0
 );
@@ -63,7 +63,8 @@ CREATE TABLE IF NOT EXISTS Photo (
 );
 
 -- Add foreign key constraints
-ALTER TABLE User ADD FOREIGN KEY(prifile_image_id) REFERENCES Photo(id);
+/*
+ALTER TABLE User ADD FOREIGN KEY(profile_image_id) REFERENCES Photo(id);
 ALTER TABLE Post ADD FOREIGN KEY(author_id) REFERENCES User(id);
 ALTER TABLE Post ADD FOREIGN KEY(author_username) REFERENCES User(username);
 ALTER TABLE Post ADD FOREIGN KEY(image_id) REFERENCES Photo(id);
@@ -79,3 +80,4 @@ ALTER TABLE Ban ADD FOREIGN KEY(banned_user_id) REFERENCES User(id);
 ALTER TABLE Photo ADD FOREIGN KEY(owner_id) REFERENCES User(id);
 ALTER TABLE Follow ADD FOREIGN KEY(follower) REFERENCES User(id);
 ALTER TABLE Follow ADD FOREIGN KEY(following) REFERENCES User(id);
+*/
