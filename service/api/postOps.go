@@ -72,7 +72,7 @@ func (rt *_router) createPost(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Create a new post in the database
-	post_id, err := rt.db.AddPost(userID, post) // createPost(userID, post) returns the post ID of the created post
+	post_id, err := rt.db.AddPost(post) // createPost(userID, post) returns the post ID of the created post
 	if err != nil {
 		// If there was an error creating the post, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
