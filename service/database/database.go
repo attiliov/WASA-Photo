@@ -53,7 +53,7 @@ type AppDatabase interface {
 	DeleteUser(userID string) error
 
 	GetUserPosts(userID string) ([]structs.ResourceID, error)
-	AddPost(userID string, post structs.UserPost) (structs.ResourceID, error)
+	AddPost(post structs.UserPost) (structs.ResourceID, error)
 	GetPost(postID string) (structs.UserPost, error)
 	UpdatePost(postID string, post structs.UserPost) error
 	DeletePost(postID string) error
