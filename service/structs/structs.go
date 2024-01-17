@@ -1,62 +1,58 @@
 package structs
 
 type Username struct {
-	Value string `json:"value"`
+	Username string `json:"username"`
 }
-
 type ResourceID struct {
-	Value string `json:"value"`
+	ResourceID string `json:"resourceId"`
 }
-
 type Date struct {
-	Value string `json:"value"`
+	Date string `json:"date"`
 }
-
 type Caption struct {
-	Value string `json:"value"`
+	Caption string `json:"caption"`
 }
-
 type Image struct {
-	URI string `json:"uri"`
+	Id string `json:"image"`
 }
-
 type Counter struct {
-	Value int `json:"count"`
+	Value int `json:"counter"`
 }
 
 type UserCollection struct {
 	Users []User `json:"users"`
 }
 
+
 type User struct {
-	UserID        ResourceID `json:"userId"`
-	Username      Username   `json:"username"`
-	SignUpDate    Date       `json:"signUpDate"`
-	LastSeenDate  Date       `json:"lastSeenDate"`
-	Bio           Caption    `json:"bio"`
-	ProfileImage  Image      `json:"profileImage"`
-	Followers     Counter    `json:"followers"`
-	Following     Counter    `json:"following"`
+	UserID        string `json:"userId"`
+	Username      string   `json:"username"`
+	SignUpDate    string       `json:"signUpDate"`
+	LastSeenDate  string       `json:"lastSeenDate"`
+	Bio           string    `json:"bio"`
+	ProfileImage  string      `json:"profileImage"`
+	Followers     int    `json:"followers"`
+	Following     int    `json:"following"`
 }
 
 type UserPost struct {
-	PostID         ResourceID `json:"postId"`
-	AuthorUsername Username   `json:"authorUsername"`
-	AuthorID       ResourceID `json:"authorId"`
-	CreationDate   Date       `json:"creationDate"`
-	Caption        Caption    `json:"caption"`
-	Image          Image      `json:"image"`
-	LikeCount      Counter    `json:"likeCount"`
-	CommentCount   Counter    `json:"commentCount"`
+	PostID         string `json:"postId"`
+	AuthorUsername string   `json:"authorUsername"`
+	AuthorID       string `json:"authorId"`
+	CreationDate   string       `json:"creationDate"`
+	Caption        string    `json:"caption"`
+	Image          string      `json:"image"`
+	LikeCount      int    `json:"likeCount"`
+	CommentCount   int    `json:"commentCount"`
 }
 
 type Comment struct {
-	CommentID      ResourceID `json:"commentId"`
-	AuthorUsername Username   `json:"authorUsername"`
-	AuthorID       ResourceID `json:"authorId"`
-	CreationDate   Date       `json:"creationDate"`
-	Caption        Caption    `json:"caption"`
-	LikeCount      Counter    `json:"likeCount"`
+	CommentID      string `json:"commentId"`
+	AuthorUsername string   `json:"authorUsername"`
+	AuthorID       string `json:"authorId"`
+	CreationDate   string       `json:"creationDate"`
+	Caption        string    `json:"caption"`
+	LikeCount      int    `json:"likeCount"`
 }
 
 type PostStream struct {
@@ -77,9 +73,9 @@ type Success struct {
 }
 
 type Like struct {
-	Resource ResourceID `json:"likeId"`		//The post or the comment
-	UserID        ResourceID `json:"userId"`
-	Username      Username   `json:"username"`
+	Resource string `json:"likeId"`		//The post or the comment
+	UserID        string `json:"userId"`
+	Username      string   `json:"username"`
 }
 
 type LikeCollection struct {

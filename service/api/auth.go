@@ -1,9 +1,12 @@
 package api
 
 import (
-    "encoding/json"
-    "net/http"
-    "github.com/julienschmidt/httprouter"
+	"encoding/json"
+	"net/http"
+
+	"github.com/attiliov/WASA-Photo/service/structs"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 // getToken is the handler for POST /session
@@ -11,10 +14,13 @@ import (
 // and return the userId if the username is valid.
 // If user is not present in the database, it will be created
 // and the userId will be returned.
+
 func (rt *_router) getAuthToken(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
     // Parse and decode the request body into a string
-    var username string
+    var username structs.Username
     err := json.NewDecoder(r.Body).Decode(&username)
+    rt.baseLogger.Println("username: ", username, "err: ", err)
+
     if err != nil {
         // If there is something wrong with the request body, return a 400 status
         w.WriteHeader(http.StatusBadRequest)
@@ -22,11 +28,11 @@ func (rt *_router) getAuthToken(w http.ResponseWriter, r *http.Request, _ httpro
     }
     
     // Get the user from the database
-    user, err := rt.db.GetUser(username)
+    user, err := rt.db.GetUser(string(username.Username))
 
     // If the user doesn't exist, create a new user
     if err != nil {
-        user, err = rt.db.CreateUser(username)
+        user, err = rt.db.CreateUser(string(username.Username))
         if err != nil {
             // If there was an error creating the user, return a 500 status
             w.WriteHeader(http.StatusInternalServerError)

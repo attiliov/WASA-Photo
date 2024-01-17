@@ -20,7 +20,7 @@ import (
 
 func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// Parse and decode the request body into a string
-	var username string
+	var username structs.Username
 	err := json.NewDecoder(r.Body).Decode(&username)
 	if err != nil {
 		// If there is something wrong with the request body, return a 400 status
@@ -28,8 +28,15 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, _ httprout
 		return
 	}
 
+	// Check that the username is not empty
+	if username.Username == "" {
+		// If the username is empty, return a 400 status
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	// Get users with similar usernames
-	users, err := rt.db.SearchUsername(username)
+	users, err := rt.db.SearchUsername(username.Username)
 	if err != nil {
 		// If there was an error getting the users, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)

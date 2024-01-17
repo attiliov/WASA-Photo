@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/gofrs/uuid"
 	"github.com/attiliov/WASA-Photo/service/structs"
+	"github.com/attiliov/WASA-Photo/service/globaltime"
 )
 
 /*
@@ -18,8 +19,8 @@ import (
 	DeleteUser(userID string) error
 */
 
-// GetUser returns the user with the given username
-func (db *appdbimpl) GetUser(username string) (structs.User, error) {
+// GetUser returns the user with the given username or id
+func (db *appdbimpl) GetUser(param string) (structs.User, error) {
 	var user structs.User
 	err := db.c.QueryRow(`
     SELECT 
@@ -34,8 +35,8 @@ func (db *appdbimpl) GetUser(username string) (structs.User, error) {
     FROM 
         User 
     WHERE 
-        username = ?`, 
-    username).Scan(&user.UserID, &user.Username, &user.SignUpDate, &user.LastSeenDate, &user.Bio, &user.ProfileImage, &user.Followers, &user.Following)
+        username = ? OR id = ? `, 
+    param, param).Scan(&user.UserID, &user.Username, &user.SignUpDate, &user.LastSeenDate, &user.Bio, &user.ProfileImage, &user.Followers, &user.Following)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return user, fmt.Errorf("user not found: %w", err)
@@ -54,11 +55,15 @@ func (db *appdbimpl) CreateUser(username string) (structs.User, error) {
         return user, fmt.Errorf("error generating UUID: %w", err)
     }
 
+	// Set signup date and last seen date to the current time
+	signupDate := globaltime.Now().String()
+	lastSeenDate := globaltime.Now().String()
+
     err = db.c.QueryRow(`
     INSERT INTO 
-        User (id, username) 
+        User (id, username, signup_date, last_seen, followers_count, following_count) 
     VALUES 
-        (?, ?) 
+        (?, ?, ?, ?, ?, ?) 
     RETURNING 
         id, 
         username, 
@@ -68,8 +73,9 @@ func (db *appdbimpl) CreateUser(username string) (structs.User, error) {
         profile_image_id, 
         followers_count, 
         following_count`, 
-    userID.String(), username).Scan(&user.UserID, &user.Username, &user.SignUpDate, &user.LastSeenDate, &user.Bio, &user.ProfileImage, &user.Followers, &user.Following)
+    userID.String(), username, signupDate, lastSeenDate, 0, 0).Scan(&user.UserID, &user.Username, &user.SignUpDate, &user.LastSeenDate, &user.Bio, &user.ProfileImage, &user.Followers, &user.Following)
     if err != nil {
+		fmt.Println(err)
         return user, fmt.Errorf("error creating user: %w", err)
     }
     return user, nil
@@ -93,7 +99,9 @@ func (db *appdbimpl) SearchUsername(username string) ([]structs.User, error) {
 	WHERE 
 		username LIKE ?`, 
 	"%"+username+"%")
+	
 	if err != nil {
+		fmt.Println("error",err)
 		return users, fmt.Errorf("error searching username: %w", err)
 	}
 	defer rows.Close()
@@ -101,6 +109,7 @@ func (db *appdbimpl) SearchUsername(username string) ([]structs.User, error) {
 		var user structs.User
 		err = rows.Scan(&user.UserID, &user.Username, &user.SignUpDate, &user.LastSeenDate, &user.Bio, &user.ProfileImage, &user.Followers, &user.Following)
 		if err != nil {
+			fmt.Println("error",err)
 			return users, fmt.Errorf("error scanning user: %w", err)
 		}
 		users = append(users, user)

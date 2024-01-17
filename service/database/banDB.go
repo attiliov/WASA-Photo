@@ -21,10 +21,10 @@ func (db *appdbimpl) IsBanned(userID string, bannedID string) (bool, error) {
 			SELECT
 				1
 			FROM
-				bans
+				Ban
 			WHERE
 				user_id = ? AND banned_user_id = ?
-		)`, bannedID, userID).Scan(&banned)
+		)`, userID, bannedID).Scan(&banned)
 	if err != nil {
 		return banned, fmt.Errorf("querying ban: %w", err)
 	}
@@ -50,7 +50,7 @@ func (db *appdbimpl) GetUserBanList(userID string) ([]structs.User, error) {
 
 	for rows.Next() {
 		var bannedUser structs.User
-		err = rows.Scan(&bannedUser.UserID.Value, &bannedUser.Username.Value, &bannedUser.SignUpDate.Value, &bannedUser.LastSeenDate.Value, &bannedUser.Bio.Value, &bannedUser.ProfileImage.URI, &bannedUser.Followers.Value, &bannedUser.Following.Value)
+		err = rows.Scan(&bannedUser.UserID, &bannedUser.Username, &bannedUser.SignUpDate, &bannedUser.LastSeenDate, &bannedUser.Bio, &bannedUser.ProfileImage, &bannedUser.Followers, &bannedUser.Following)
 		if err != nil {
 			return bannedUsers, fmt.Errorf("scanning banned user: %w", err)
 		}

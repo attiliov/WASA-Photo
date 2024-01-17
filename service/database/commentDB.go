@@ -77,7 +77,7 @@ func (db *appdbimpl) CreateComment(postID string, comment structs.Comment) error
     if err != nil {
         return fmt.Errorf("error generating UUID: %w", err)
     }
-    comment.CommentID.Value = id.String()
+    comment.CommentID = id.String()
 
 	_, err = db.c.Exec(`
 	INSERT INTO 

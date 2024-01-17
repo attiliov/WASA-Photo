@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/gofrs/uuid"
+
 	"github.com/attiliov/WASA-Photo/service/structs"
+	"github.com/gofrs/uuid"
 )
 
 /*
@@ -38,7 +39,7 @@ func (db *appdbimpl) GetUserPosts(userID string) ([]structs.ResourceID, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var post structs.ResourceID
-		err := rows.Scan(&post.Value)
+		err := rows.Scan(&post)
 		if err != nil {
 			return posts, fmt.Errorf("error scanning user posts: %w", err)
 		}
@@ -52,9 +53,9 @@ func (db *appdbimpl) AddPost(post structs.UserPost) (structs.ResourceID, error) 
     // Generate a new UUID v4
     id, err := uuid.NewV4()
     if err != nil {
-        return post.PostID, fmt.Errorf("error generating UUID: %w", err)
+        return structs.ResourceID{}, fmt.Errorf("error generating UUID: %w", err)
     }
-    post.PostID.Value = id.String()
+    post.PostID = id.String()
 
     // Insert the post in the DB
     _, err = db.c.Exec(`
@@ -62,11 +63,11 @@ func (db *appdbimpl) AddPost(post structs.UserPost) (structs.ResourceID, error) 
         Post (id, author_id, author_username, creation_date, caption, image_id, like_count, comment_count) 
     VALUES 
         (?, ?, ?, ?, ?, ?, ?, ?)`, 
-    post.PostID.Value, post.AuthorUsername.Value, post.CreationDate.Value, post.Caption.Value, post.Image.URI, post.LikeCount.Value, post.CommentCount.Value)
+    post.PostID, post.AuthorUsername, post.CreationDate, post.Caption, post.Image, post.LikeCount, post.CommentCount)
     if err != nil {
-        return post.PostID, fmt.Errorf("error inserting post: %w", err)
+        return structs.ResourceID{ResourceID: post.PostID}, fmt.Errorf("error inserting post: %w", err)
     }
-    return post.PostID, nil
+    return structs.ResourceID{ResourceID: post.PostID}, nil
 }
 
 // GetPost returns the post with the given postID
@@ -110,7 +111,7 @@ func (db *appdbimpl) UpdatePost(postID string, post structs.UserPost) error {
 		comment_count = ? 
 	WHERE 
 		id = ?`, 
-	post.AuthorID.Value, post.AuthorUsername.Value, post.Caption.Value, post.Image.URI, post.LikeCount.Value, post.CommentCount.Value, postID)
+	post.AuthorID, post.AuthorUsername, post.Caption, post.Image, post.LikeCount, post.CommentCount, string(postID))
 	if err != nil {
 		return fmt.Errorf("error updating post: %w", err)
 	}
@@ -151,7 +152,7 @@ func (db *appdbimpl) GetUserFeed(userID string) ([]structs.ResourceID, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var post structs.ResourceID
-		err := rows.Scan(&post.Value)
+		err := rows.Scan(&post)
 		if err != nil {
 			return posts, fmt.Errorf("error scanning user feed: %w", err)
 		}

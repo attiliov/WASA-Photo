@@ -32,7 +32,7 @@ func (db *appdbimpl) GetFollowersList(userID string) ([]structs.User, error) {
 
 	for rows.Next() {
 		var follower structs.User
-		err = rows.Scan(&follower.UserID.Value, &follower.Username.Value, &follower.SignUpDate.Value, &follower.LastSeenDate.Value, &follower.Bio.Value, &follower.ProfileImage.URI, &follower.Followers.Value, &follower.Following.Value)
+		err = rows.Scan(&follower.UserID, &follower.Username, &follower.SignUpDate, &follower.LastSeenDate, &follower.Bio, &follower.ProfileImage, &follower.Followers, &follower.Following)
 		if err != nil {
 			return followers, fmt.Errorf("scanning follower: %w", err)
 		}
@@ -60,7 +60,7 @@ func (db *appdbimpl) GetFollowingsList(userID string) ([]structs.User, error) {
 
 	for rows.Next() {
 		var following structs.User
-		err = rows.Scan(&following.UserID.Value, &following.Username.Value, &following.SignUpDate.Value, &following.LastSeenDate.Value, &following.Bio.Value, &following.ProfileImage.URI, &following.Followers.Value, &following.Following.Value)
+		err = rows.Scan(&following.UserID, &following.Username, &following.SignUpDate, &following.LastSeenDate, &following.Bio, &following.ProfileImage, &following.Followers, &following.Following)
 		if err != nil {
 			return followings, fmt.Errorf("scanning following: %w", err)
 		}
