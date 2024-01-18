@@ -36,7 +36,14 @@ func (db *appdbimpl) GetUserBanList(userID string) ([]structs.User, error) {
 	var bannedUsers []structs.User
 	rows, err := db.c.Query(`
 		SELECT 
-			User.*
+			User.id,
+			User.username,
+			User.signup_date,
+			User.last_seen,
+			User.bio,
+			User.profile_image_id,
+			User.followers_count,
+			User.following_count
 		FROM 
 			Ban JOIN User
 		ON

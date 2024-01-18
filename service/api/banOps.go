@@ -32,6 +32,7 @@ func (rt *_router) getUserBanList(w http.ResponseWriter, r *http.Request, ps htt
 	// Get the banned users of the specified user
 	bannedUsers, err := rt.db.GetUserBanList(userID)
 	if err != nil {
+		rt.baseLogger.Println(err)
 		// If there was an error getting the banned users, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -92,6 +93,7 @@ func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprout
 	// Unban the user
 	err = rt.db.UnbanUser(userID, bannedID)
 	if err != nil {
+		rt.baseLogger.Println(err)
 		// If there was an error unbanning the user, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
 		return

@@ -90,7 +90,9 @@ func (db *appdbimpl) LikePost(postID string, likerID string) error {
 	}
 
 	// Update the post's like count
-	_, err = db.c.Exec("UPDATE Post SET likes_count = likes_count + 1 WHERE id = ?", postID)
+	_, err = db.c.Exec("UPDATE Post SET like_count = like_count + 1 WHERE id = ?", postID)
+	//rowCount, err := res.RowsAffected()
+	//fmt.Println("rowCount:", rowCount)
 	if err != nil {
 		return fmt.Errorf("error updating post like count: %w", err)
 	}
@@ -126,7 +128,7 @@ func (db *appdbimpl) UnlikePost(postID string, likerID string) error {
 	}
 
 	// Update the post's like count
-	_, err = db.c.Exec("UPDATE Post SET likes_count = likes_count - 1 WHERE id = ?", postID)
+	_, err = db.c.Exec("UPDATE Post SET like_count = like_count - 1 WHERE id = ?", postID)
 	if err != nil {
 		return fmt.Errorf("error updating post like count: %w", err)
 	}
@@ -206,7 +208,7 @@ func (db *appdbimpl) LikeComment(commentID string, likerID string) error {
 	}
 
 	// Update the comment's like count
-	_, err = db.c.Exec("UPDATE Comment SET likes_count = likes_count + 1 WHERE id = ?", commentID)
+	_, err = db.c.Exec("UPDATE Comment SET like_count = like_count + 1 WHERE id = ?", commentID)
 	if err != nil {
 		return fmt.Errorf("error updating comment like count: %w", err)
 	}
@@ -242,7 +244,7 @@ func (db *appdbimpl) UnlikeComment(commentID string, likerID string) error {
 	}
 
 	// Update the comment's like count
-	_, err = db.c.Exec("UPDATE Comment SET likes_count = likes_count - 1 WHERE id = ?", commentID)
+	_, err = db.c.Exec("UPDATE Comment SET like_count = like_count - 1 WHERE id = ?", commentID)
 	if err != nil {
 		return fmt.Errorf("error updating comment like count: %w", err)
 	}

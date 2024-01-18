@@ -54,10 +54,8 @@ func (rt *_router) getFollowersList(w http.ResponseWriter, r *http.Request, ps h
 }
 
 func (rt *_router) getFollowingsList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
-
 	// Check authorization (bearer token not banned from user)
 	beaerToken, err := getBearerToken(r)
 	if err != nil {
@@ -75,6 +73,7 @@ func (rt *_router) getFollowingsList(w http.ResponseWriter, r *http.Request, ps 
 	// Get the followings of the specified user
 	followings, err := rt.db.GetFollowingsList(userID)
 	if err != nil {
+		rt.baseLogger.Println("err:", err)
 		// If there was an error getting the followings, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -107,6 +106,7 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 	// Follow the specified user
 	err = rt.db.FollowUser(userID, followingID)
 	if err != nil {
+		rt.baseLogger.Println("err:", err)
 		// If there was an error following the user, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -139,6 +139,7 @@ func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 	// Unfollow the specified user
 	err = rt.db.UnfollowUser(userID, followingID)
 	if err != nil {
+		rt.baseLogger.Println("err:", err)
 		// If there was an error unfollowing the user, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
 		return

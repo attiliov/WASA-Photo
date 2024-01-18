@@ -129,6 +129,7 @@ func (rt *_router) editPost(w http.ResponseWriter, r *http.Request, ps httproute
 	var post structs.UserPost
 	err := json.NewDecoder(r.Body).Decode(&post)
 	if err != nil {
+		rt.baseLogger.Println("error decoding request body", err)
 		// If there is something wrong with the request body, return a 400 status
 		w.WriteHeader(http.StatusBadRequest)
 		return

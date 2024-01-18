@@ -19,8 +19,6 @@ func (rt *_router) getAuthToken(w http.ResponseWriter, r *http.Request, _ httpro
     // Parse and decode the request body into a string
     var username structs.Username
     err := json.NewDecoder(r.Body).Decode(&username)
-    rt.baseLogger.Println("username: ", username, "err: ", err)
-
     if err != nil {
         // If there is something wrong with the request body, return a 400 status
         w.WriteHeader(http.StatusBadRequest)

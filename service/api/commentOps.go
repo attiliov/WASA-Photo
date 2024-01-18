@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"net/http"
-
 	"github.com/attiliov/WASA-Photo/service/structs"
 	"github.com/julienschmidt/httprouter"
 )
@@ -37,6 +36,7 @@ func (rt *_router) getPostComments(w http.ResponseWriter, r *http.Request, ps ht
 	banned, err := rt.db.IsBanned(userID, requesterId)
 	if err != nil || banned {
 		// If there was an error checking if the user is banned, return a 500 status
+		rt.baseLogger.Println("err: ", err)
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -45,6 +45,7 @@ func (rt *_router) getPostComments(w http.ResponseWriter, r *http.Request, ps ht
 	comments, err := rt.db.GetPostComments(postID)
 	if err != nil {
 		// If there was an error getting the comments, return a 500 status
+		rt.baseLogger.Println("err: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -64,22 +65,22 @@ func (rt *_router) createComment(w http.ResponseWriter, r *http.Request, ps http
 	postID := ps.ByName("postId")
 
 	// Get the user ID from the URL
-	userID := ps.ByName("userId")
-
-	// Check authorization
-	beaerToken, err := getBearerToken(r)
-	if err != nil || beaerToken != userID {
-		// If there was an error getting the bearer token, return a 401 status
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
+	//userID := ps.ByName("userId")
 
 	// Get the comment from the request body
 	var comment structs.Comment
-	err = json.NewDecoder(r.Body).Decode(&comment)
+	err := json.NewDecoder(r.Body).Decode(&comment)
 	if err != nil {
 		// If there was an error decoding the request body, return a 400 status
 		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Check authorization
+	beaerToken, err := getBearerToken(r)
+	if err != nil || beaerToken != comment.AuthorID {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
@@ -93,6 +94,7 @@ func (rt *_router) createComment(w http.ResponseWriter, r *http.Request, ps http
 	// Create the comment
 	err = rt.db.CreateComment(postID ,comment)
 	if err != nil {
+		rt.baseLogger.Println("err: ", err)
 		// If there was an error creating the comment, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -129,16 +131,14 @@ func (rt *_router) getComment(w http.ResponseWriter, r *http.Request, ps httprou
 	comment, err := rt.db.GetComment(commentID)
 	if err != nil {
 		// If there was an error getting the comment, return a 500 status
+		//rt.baseLogger.Println("err: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	// Create a response object
-	response := structs.Success{Message: "Comment retrieved successfully", Body: comment}
-
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	json.NewEncoder(w).Encode(comment)
 }
 
 func (rt *_router) editComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -147,22 +147,22 @@ func (rt *_router) editComment(w http.ResponseWriter, r *http.Request, ps httpro
 	commentID := ps.ByName("commentId")
 
 	// Get the user ID from the URL
-	userID := ps.ByName("userId")
-
-	// Check authorization
-	beaerToken, err := getBearerToken(r)
-	if err != nil || beaerToken != userID {
-		// If there was an error getting the bearer token, return a 401 status
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
+	//userID := ps.ByName("userId")
 
 	// Get the comment from the request body
 	var comment structs.Comment
-	err = json.NewDecoder(r.Body).Decode(&comment)
+	err := json.NewDecoder(r.Body).Decode(&comment)
 	if err != nil {
 		// If there was an error decoding the request body, return a 400 status
 		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Check authorization
+	beaerToken, err := getBearerToken(r)
+	if err != nil || beaerToken != comment.AuthorID {
+		// If there was an error getting the bearer token, return a 401 status
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
@@ -184,11 +184,19 @@ func (rt *_router) deleteComment(w http.ResponseWriter, r *http.Request, ps http
 	commentID := ps.ByName("commentId")
 
 	// Get the user ID from the URL
-	userID := ps.ByName("userId")
+	//userID := ps.ByName("userId")
+
+	// Get comment author id
+	comment, err := rt.db.GetComment(commentID)
+	if err != nil {
+		// If there was an error getting the comment, return a 500 status
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	// Check authorization
 	beaerToken, err := getBearerToken(r)
-	if err != nil || beaerToken != userID {
+	if err != nil || beaerToken != comment.AuthorID {
 		// If there was an error getting the bearer token, return a 401 status
 		w.WriteHeader(http.StatusUnauthorized)
 		return

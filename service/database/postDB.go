@@ -31,16 +31,20 @@ func (db *appdbimpl) GetUserPosts(userID string) ([]structs.ResourceID, error) {
 	FROM 
 		Post 
 	WHERE 
-		author_id = ?`, 
+		author_id = ?
+	ORDER BY
+		creation_date DESC`, 
 	userID)
 	if err != nil {
+		//fmt.Println("error getting user posts", err)
 		return posts, fmt.Errorf("error getting user posts: %w", err)
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var post structs.ResourceID
-		err := rows.Scan(&post)
+		err := rows.Scan(&post.ResourceID)
 		if err != nil {
+			//fmt.Println("error scanning user posts", err)
 			return posts, fmt.Errorf("error scanning user posts: %w", err)
 		}
 		posts = append(posts, post)
@@ -63,7 +67,7 @@ func (db *appdbimpl) AddPost(post structs.UserPost) (structs.ResourceID, error) 
         Post (id, author_id, author_username, creation_date, caption, image_id, like_count, comment_count) 
     VALUES 
         (?, ?, ?, ?, ?, ?, ?, ?)`, 
-    post.PostID, post.AuthorUsername, post.CreationDate, post.Caption, post.Image, post.LikeCount, post.CommentCount)
+    post.PostID,post.AuthorID, post.AuthorUsername, post.CreationDate, post.Caption, post.Image, 0, 0)
     if err != nil {
         return structs.ResourceID{ResourceID: post.PostID}, fmt.Errorf("error inserting post: %w", err)
     }

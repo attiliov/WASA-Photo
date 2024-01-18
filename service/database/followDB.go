@@ -18,7 +18,14 @@ func (db *appdbimpl) GetFollowersList(userID string) ([]structs.User, error) {
 	var followers []structs.User
 	rows, err := db.c.Query(`
 		SELECT 
-			User.*
+			User.id,
+			User.username,
+			User.signup_date,
+			User.last_seen,
+			User.bio,
+			User.profile_image_id,
+			User.followers_count,
+			User.following_count
 		FROM 
 			Follow JOIN User
 		ON
@@ -46,7 +53,14 @@ func (db *appdbimpl) GetFollowingsList(userID string) ([]structs.User, error) {
 	var followings []structs.User
 	rows, err := db.c.Query(`
 		SELECT 
-			User.*
+			User.id,
+			User.username,
+			User.signup_date,
+			User.last_seen,
+			User.bio,
+			User.profile_image_id,
+			User.followers_count,
+			User.following_count
 		FROM 
 			Follow JOIN User
 		ON
@@ -98,7 +112,7 @@ func (db *appdbimpl) FollowUser(userID string, followingID string) error {
 	// Update the following counter
 	_, err = db.c.Exec(`
 		UPDATE User
-		SET following = following + 1
+		SET following_count = following_count + 1
 		WHERE id = ?`, userID)
 	if err != nil {
 		return fmt.Errorf("updating following counter: %w", err)
@@ -107,7 +121,7 @@ func (db *appdbimpl) FollowUser(userID string, followingID string) error {
 	// Update the followers counter
 	_, err = db.c.Exec(`
 		UPDATE User
-		SET followers = followers + 1
+		SET followers_count = followers_count + 1
 		WHERE id = ?`, followingID)
 	if err != nil {
 		return fmt.Errorf("updating followers counter: %w", err)
@@ -146,7 +160,7 @@ func (db *appdbimpl) UnfollowUser(userID string, followingID string) error {
 	// Update the following counter
 	_, err = db.c.Exec(`
 		UPDATE User
-		SET following = following - 1
+		SET following_count = following_count - 1
 		WHERE id = ?`, userID)
 	if err != nil {
 		return fmt.Errorf("updating following counter: %w", err)
@@ -154,7 +168,7 @@ func (db *appdbimpl) UnfollowUser(userID string, followingID string) error {
 	// Update the followers counter
 	_, err = db.c.Exec(`
 		UPDATE User
-		SET followers = followers - 1
+		SET followers_count = followers_count - 1
 		WHERE id = ?`, followingID)
 	if err != nil {
 		return fmt.Errorf("updating followers counter: %w", err)

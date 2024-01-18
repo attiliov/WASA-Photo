@@ -15,45 +15,45 @@ func (rt *_router) Handler() http.Handler {
 
 	rt.router.GET("/users", rt.searchUser) // TESTED
 	
-	rt.router.GET("/users/:userId", rt.getUserProfile)	//
-	rt.router.PUT("/users/:userId", rt.updateUserProfile) //
-	rt.router.DELETE("/users/:userId", rt.deleteUserProfile) // 
+	rt.router.GET("/users/:userId", rt.getUserProfile)	// TESTED
+	rt.router.PUT("/users/:userId", rt.updateUserProfile) // TESTED
+	rt.router.DELETE("/users/:userId", rt.deleteUserProfile) // TESTED
 
-	rt.router.GET("/users/:userId/posts", rt.getUserPosts)
-	rt.router.POST("/users/:userId/posts", rt.createPost)
+	rt.router.GET("/users/:userId/posts", rt.getUserPosts) // TESTED
+	rt.router.POST("/users/:userId/posts", rt.createPost) // TESTED TODO: add chcek that if the photo is not null, the photo is saved in the db
 
-	rt.router.GET("/users/:userId/posts/:postId", rt.getPost)
-	rt.router.PUT("/users/:userId/posts/:postId", rt.editPost)
-	rt.router.DELETE("/users/:userId/posts/:postId", rt.deletePost)
+	rt.router.GET("/users/:userId/posts/:postId", rt.getPost) // TESTED
+	rt.router.PUT("/users/:userId/posts/:postId", rt.editPost) // TESTED
+	rt.router.DELETE("/users/:userId/posts/:postId", rt.deletePost) // TESTED
 
-	rt.router.GET("/users/:userId/posts/:postId/likes", rt.getPostLikes)
+	rt.router.GET("/users/:userId/posts/:postId/likes", rt.getPostLikes) // TESTED
 
-	rt.router.PUT("/users/:userId/posts/:postId/likes/:likeId", rt.likePost)
-	rt.router.DELETE("/users/:userId/posts/:postId/likes/:likeId", rt.unlikePost)
+	rt.router.PUT("/users/:userId/posts/:postId/likes/:likeId", rt.likePost) // TESTED
+	rt.router.DELETE("/users/:userId/posts/:postId/likes/:likeId", rt.unlikePost) // TESTED
 
-	rt.router.GET("/users/:userId/posts/:postId/comments", rt.getPostComments)
-	rt.router.POST("/users/:userId/posts/:postId/comments", rt.createComment)
+	rt.router.GET("/users/:userId/posts/:postId/comments", rt.getPostComments) // TESTED
+	rt.router.POST("/users/:userId/posts/:postId/comments", rt.createComment) // TESTED
 
-	rt.router.GET("/users/:userId/posts/:postId/comments/:commentId", rt.getComment)
-	rt.router.PUT("/users/:userId/posts/:postId/comments/:commentId",rt.editComment)
-	rt.router.DELETE("/users/:userId/posts/:postId/comments/:commentId",rt.deleteComment)
+	rt.router.GET("/users/:userId/posts/:postId/comments/:commentId", rt.getComment) // TESTED
+	rt.router.PUT("/users/:userId/posts/:postId/comments/:commentId",rt.editComment) // TESTED
+	rt.router.DELETE("/users/:userId/posts/:postId/comments/:commentId",rt.deleteComment) // TESTED
 
-	rt.router.GET("/users/:userId/posts/:postId/comments/:commentId/likes", rt.getCommentLikes)
+	rt.router.GET("/users/:userId/posts/:postId/comments/:commentId/likes", rt.getCommentLikes) // TESTED
 
-	rt.router.PUT("/users/:userId/posts/:postId/comments/:commentId/likes/:likeId", rt.likeComment)
-	rt.router.DELETE("/users/:userId/posts/:postId/comments/:commentId/likes/:likeId", rt.unlikeComment)
+	rt.router.PUT("/users/:userId/posts/:postId/comments/:commentId/likes/:likeId", rt.likeComment) // TESTED
+	rt.router.DELETE("/users/:userId/posts/:postId/comments/:commentId/likes/:likeId", rt.unlikeComment) // TESTED
 
-	rt.router.GET("/users/:userId/follower", rt.getFollowersList)
+	rt.router.GET("/users/:userId/followers", rt.getFollowersList) // TESTED
 	
-	rt.router.GET("/user/:userId/following", rt.getFollowingsList)
+	rt.router.GET("/users/:userId/following", rt.getFollowingsList)	// TESTED
 	
-	rt.router.PUT("/users/:userId/following/:followingId", rt.followUser)
-	rt.router.DELETE("/users/:userId/following/:followingId", rt.unfollowUser)
+	rt.router.PUT("/users/:userId/following/:followingId", rt.followUser) // TESTED
+	rt.router.DELETE("/users/:userId/following/:followingId", rt.unfollowUser) // TESTED
 
-	rt.router.GET("/users/:userId/banned", rt.getUserBanList)
+	rt.router.GET("/users/:userId/banned", rt.getUserBanList) // TESTED
 
-	rt.router.PUT("/users/:userId/banned/:bannedId", rt.banUser)
-	rt.router.DELETE("/users/:userId/banned/:bannedId", rt.unbanUser)
+	rt.router.PUT("/users/:userId/banned/:bannedId", rt.banUser) // TESTED
+	rt.router.DELETE("/users/:userId/banned/:bannedId", rt.unbanUser) // TESTED
 
 	rt.router.POST("/users/:userId/photos", rt.savePhoto)
 

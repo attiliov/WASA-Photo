@@ -24,10 +24,10 @@ func (db *appdbimpl) GetPostComments(postID string) ([]structs.Comment, error) {
 	SELECT 
 		id, 
 		author_id, 
-		username
+		username,
 		creation_date, 
 		caption, 
-		likes_count 
+		like_count 
 	FROM 
 		Comment 
 	WHERE 
@@ -81,10 +81,10 @@ func (db *appdbimpl) CreateComment(postID string, comment structs.Comment) error
 
 	_, err = db.c.Exec(`
 	INSERT INTO 
-		Comment(id, post_id, author_id, creation_date, caption, likes_count) 
+		Comment(id, username, post_id, author_id, creation_date, caption, like_count) 
 	VALUES 
-		(?, ?, ?, ?, ?, ?)`, 
-	comment.CommentID, postID, comment.AuthorID, comment.CreationDate, comment.Caption, comment.LikeCount)
+		(?, ?, ?, ?, ?, ?, ?)`, 
+	comment.CommentID, comment.AuthorUsername, postID, comment.AuthorID, comment.CreationDate, comment.Caption, 0)
 	if err != nil {
 		return fmt.Errorf("error creating comment: %w", err)
 	}
@@ -94,12 +94,12 @@ func (db *appdbimpl) CreateComment(postID string, comment structs.Comment) error
 	UPDATE
 		Post
 	SET
-		comments_count = comments_count + 1
+		comment_count = comment_count + 1
 	WHERE
 		id = ?`,
 	postID)
 	if err != nil {
-		return fmt.Errorf("error updating post's comments count: %w", err)
+		return fmt.Errorf("error updating post's comment count: %w", err)
 	}
 
 
@@ -113,10 +113,10 @@ func (db *appdbimpl) GetComment(commentID string) (structs.Comment, error) {
 	SELECT 
 		id, 
 		author_id, 
-		username
+		username,
 		creation_date, 
 		caption, 
-		likes_count 
+		like_count 
 	FROM 
 		Comment 
 	WHERE 
