@@ -30,6 +30,7 @@ func (rt *_router) getFeed(w http.ResponseWriter, r *http.Request, ps httprouter
 	// Get the user feed
 	feed, err := rt.db.GetUserFeed(userID)
 	if err != nil {
+		rt.baseLogger.Println("Error getting user feed:", err)
 		// If there was an error getting the user feed, return a 500 status
 		w.WriteHeader(http.StatusInternalServerError)
 		return

@@ -146,9 +146,9 @@ func (db *appdbimpl) GetUserFeed(userID string) ([]structs.ResourceID, error) {
 	FROM 
 		Post 
 	INNER JOIN 
-		Follow ON Post.author_id = Follow.following_id 
+		Follow ON Post.author_id = Follow.following
 	WHERE 
-		Follow.user_id = ?`, 
+		Follow.follower = ?`, 
 	userID)
 	if err != nil {
 		return posts, fmt.Errorf("error getting user feed: %w", err)

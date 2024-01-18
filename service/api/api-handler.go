@@ -60,7 +60,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.GET("/users/:userId/photos/:photoId", rt.getPhoto)
 	rt.router.DELETE("/users/:userId/photos/:photoId", rt.deletePhoto)
 
-	rt.router.GET("/users/:userId/feed", rt.getFeed)
+	rt.router.GET("/users/:userId/feed", rt.getFeed) // TESTED
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
