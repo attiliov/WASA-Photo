@@ -170,7 +170,7 @@ components:
       type: object
       description: A comment made by a user to a post
       properties:
-        commentid:
+        commentId:
           $ref: '#/components/schemas/resourceId'
         authorUsername:
           $ref: '#/components/schemas/username'
