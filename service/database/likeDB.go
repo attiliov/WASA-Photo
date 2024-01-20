@@ -41,6 +41,9 @@ func (db *appdbimpl) GetPostLikes(postID string) ([]structs.Like, error) {
 		}
 		likes = append(likes, like)
 	}
+	if err := rows.Err(); err != nil {
+		return likes, fmt.Errorf("error iterating over likes: %w", err)
+	}
 	return likes, nil
 }
 
@@ -158,6 +161,9 @@ func (db *appdbimpl) GetCommentLikes(commentID string) ([]structs.Like, error) {
 			return likes, fmt.Errorf("error getting like: %w", err)
 		}
 		likes = append(likes, like)
+	}
+	if err := rows.Err(); err != nil {
+		return likes, fmt.Errorf("error iterating over likes: %w", err)
 	}
 	return likes, nil
 }

@@ -109,10 +109,12 @@ func (db *appdbimpl) SearchUsername(username string) ([]structs.User, error) {
 		var user structs.User
 		err = rows.Scan(&user.UserID, &user.Username, &user.SignUpDate, &user.LastSeenDate, &user.Bio, &user.ProfileImage, &user.Followers, &user.Following)
 		if err != nil {
-			fmt.Println("error", err)
 			return users, fmt.Errorf("error scanning user: %w", err)
 		}
 		users = append(users, user)
+	}
+	if err := rows.Err(); err != nil {
+		return users, fmt.Errorf("error iterating over users: %w", err)
 	}
 	return users, nil
 }

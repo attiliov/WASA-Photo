@@ -49,6 +49,9 @@ func (db *appdbimpl) GetUserPosts(userID string) ([]structs.ResourceID, error) {
 		}
 		posts = append(posts, post)
 	}
+	if err := rows.Err(); err != nil {
+		return posts, fmt.Errorf("error iterating over user posts: %w", err)
+	}
 	return posts, nil
 }
 
@@ -160,6 +163,9 @@ func (db *appdbimpl) GetUserFeed(userID string) ([]structs.ResourceID, error) {
 			return posts, fmt.Errorf("error scanning user feed: %w", err)
 		}
 		posts = append(posts, post)
+	}
+	if err := rows.Err(); err != nil {
+		return posts, fmt.Errorf("error iterating over user feed: %w", err)
 	}
 	return posts, nil
 }

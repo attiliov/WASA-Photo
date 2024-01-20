@@ -45,6 +45,9 @@ func (db *appdbimpl) GetFollowersList(userID string) ([]structs.User, error) {
 		}
 		followers = append(followers, follower)
 	}
+	if err := rows.Err(); err != nil {
+		return followers, fmt.Errorf("iterating over followers: %w", err)
+	}
 	return followers, nil
 }
 
@@ -79,6 +82,9 @@ func (db *appdbimpl) GetFollowingsList(userID string) ([]structs.User, error) {
 			return followings, fmt.Errorf("scanning following: %w", err)
 		}
 		followings = append(followings, following)
+	}
+	if err := rows.Err(); err != nil {
+		return followings, fmt.Errorf("iterating over followings: %w", err)
 	}
 	return followings, nil
 }

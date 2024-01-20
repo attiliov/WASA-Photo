@@ -46,6 +46,9 @@ func (db *appdbimpl) GetPostComments(postID string) ([]structs.Comment, error) {
 		}
 		comments = append(comments, comment)
 	}
+	if err := rows.Err(); err != nil {
+		return comments, fmt.Errorf("error iterating over comments: %w", err)
+	}
 	return comments, nil
 }
 

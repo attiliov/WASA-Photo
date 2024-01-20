@@ -54,7 +54,6 @@ func (db *appdbimpl) GetUserBanList(userID string) ([]structs.User, error) {
 		return bannedUsers, fmt.Errorf("querying banned users: %w", err)
 	}
 	defer rows.Close()
-
 	for rows.Next() {
 		var bannedUser structs.User
 		err = rows.Scan(&bannedUser.UserID, &bannedUser.Username, &bannedUser.SignUpDate, &bannedUser.LastSeenDate, &bannedUser.Bio, &bannedUser.ProfileImage, &bannedUser.Followers, &bannedUser.Following)
@@ -62,6 +61,9 @@ func (db *appdbimpl) GetUserBanList(userID string) ([]structs.User, error) {
 			return bannedUsers, fmt.Errorf("scanning banned user: %w", err)
 		}
 		bannedUsers = append(bannedUsers, bannedUser)
+	}
+	if err = rows.Err(); err != nil {
+		return bannedUsers, fmt.Errorf("iterating banned users: %w", err)
 	}
 	return bannedUsers, nil
 }
