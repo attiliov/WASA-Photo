@@ -23,35 +23,34 @@ type UserCollection struct {
 	Users []User `json:"users"`
 }
 
-
 type User struct {
-	UserID        string `json:"userId"`
-	Username      string   `json:"username"`
-	SignUpDate    string       `json:"signUpDate"`
-	LastSeenDate  string       `json:"lastSeenDate"`
-	Bio           string    `json:"bio"`
-	ProfileImage  string      `json:"profileImage"`
-	Followers     int    `json:"followers"`
-	Following     int    `json:"following"`
+	UserID       string `json:"userId"`
+	Username     string `json:"username"`
+	SignUpDate   string `json:"signUpDate"`
+	LastSeenDate string `json:"lastSeenDate"`
+	Bio          string `json:"bio"`
+	ProfileImage string `json:"profileImage"`
+	Followers    int    `json:"followers"`
+	Following    int    `json:"following"`
 }
 
 type UserPost struct {
 	PostID         string `json:"postId"`
-	AuthorUsername string   `json:"authorUsername"`
+	AuthorUsername string `json:"authorUsername"`
 	AuthorID       string `json:"authorId"`
-	CreationDate   string       `json:"creationDate"`
-	Caption        string    `json:"caption"`
-	Image          string      `json:"image"`
+	CreationDate   string `json:"creationDate"`
+	Caption        string `json:"caption"`
+	Image          string `json:"image"`
 	LikeCount      int    `json:"likeCount"`
 	CommentCount   int    `json:"commentCount"`
 }
 
 type Comment struct {
 	CommentID      string `json:"commentId"`
-	AuthorUsername string   `json:"authorUsername"`
+	AuthorUsername string `json:"authorUsername"`
 	AuthorID       string `json:"authorId"`
-	CreationDate   string       `json:"creationDate"`
-	Caption        string    `json:"caption"`
+	CreationDate   string `json:"creationDate"`
+	Caption        string `json:"caption"`
 	LikeCount      int    `json:"likeCount"`
 }
 
@@ -73,9 +72,9 @@ type Success struct {
 }
 
 type Like struct {
-	Resource string `json:"resourceId"`		//The post or the comment
-	UserID        string `json:"userId"`
-	Username      string   `json:"username"`
+	Resource string `json:"resourceId"` //The post or the comment
+	UserID   string `json:"userId"`
+	Username string `json:"username"`
 }
 
 type LikeCollection struct {

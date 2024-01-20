@@ -28,10 +28,10 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/ardanlabs/conf"
 	"github.com/attiliov/WASA-Photo/service/api"
 	"github.com/attiliov/WASA-Photo/service/database"
 	"github.com/attiliov/WASA-Photo/service/globaltime"
-	"github.com/ardanlabs/conf"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/sirupsen/logrus"
 	"math/rand"
@@ -82,7 +82,7 @@ func run() error {
 
 	// Start Database
 	logger.Println("initializing database support")
-	dbconn, err := sql.Open("sqlite3", cfg.DB.Filename + "?_foreign_keys=1")
+	dbconn, err := sql.Open("sqlite3", cfg.DB.Filename+"?_foreign_keys=1")
 	if err != nil {
 		logger.WithError(err).Error("error opening SQLite DB")
 		return fmt.Errorf("opening SQLite: %w", err)
