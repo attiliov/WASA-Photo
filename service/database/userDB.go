@@ -75,7 +75,6 @@ func (db *appdbimpl) CreateUser(username string) (structs.User, error) {
         following_count`,
 		userID.String(), username, signupDate, lastSeenDate, 0, 0).Scan(&user.UserID, &user.Username, &user.SignUpDate, &user.LastSeenDate, &user.Bio, &user.ProfileImage, &user.Followers, &user.Following)
 	if err != nil {
-		fmt.Println(err)
 		return user, fmt.Errorf("error creating user: %w", err)
 	}
 	return user, nil
@@ -101,7 +100,6 @@ func (db *appdbimpl) SearchUsername(username string) ([]structs.User, error) {
 		"%"+username+"%")
 
 	if err != nil {
-		fmt.Println("error", err)
 		return users, fmt.Errorf("error searching username: %w", err)
 	}
 	defer rows.Close()

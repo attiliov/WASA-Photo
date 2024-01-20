@@ -36,7 +36,6 @@ func (db *appdbimpl) GetUserPosts(userID string) ([]structs.ResourceID, error) {
 		creation_date DESC`,
 		userID)
 	if err != nil {
-		//fmt.Println("error getting user posts", err)
 		return posts, fmt.Errorf("error getting user posts: %w", err)
 	}
 	defer rows.Close()
@@ -44,7 +43,6 @@ func (db *appdbimpl) GetUserPosts(userID string) ([]structs.ResourceID, error) {
 		var post structs.ResourceID
 		err := rows.Scan(&post.ResourceID)
 		if err != nil {
-			//fmt.Println("error scanning user posts", err)
 			return posts, fmt.Errorf("error scanning user posts: %w", err)
 		}
 		posts = append(posts, post)
