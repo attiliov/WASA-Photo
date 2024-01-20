@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/gofrs/uuid"
-	"github.com/attiliov/WASA-Photo/service/structs"
 	"github.com/attiliov/WASA-Photo/service/globaltime"
+	"github.com/attiliov/WASA-Photo/service/structs"
+	"github.com/gofrs/uuid"
 )
 
 /*
@@ -35,8 +35,8 @@ func (db *appdbimpl) GetUser(param string) (structs.User, error) {
     FROM 
         User 
     WHERE 
-        username = ? OR id = ? `, 
-    param, param).Scan(&user.UserID, &user.Username, &user.SignUpDate, &user.LastSeenDate, &user.Bio, &user.ProfileImage, &user.Followers, &user.Following)
+        username = ? OR id = ? `,
+		param, param).Scan(&user.UserID, &user.Username, &user.SignUpDate, &user.LastSeenDate, &user.Bio, &user.ProfileImage, &user.Followers, &user.Following)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return user, fmt.Errorf("user not found: %w", err)
@@ -47,19 +47,19 @@ func (db *appdbimpl) GetUser(param string) (structs.User, error) {
 }
 
 func (db *appdbimpl) CreateUser(username string) (structs.User, error) {
-    var user structs.User
+	var user structs.User
 
-    // Generate a new UUID v4
-    userID, err := uuid.NewV4()
-    if err != nil {
-        return user, fmt.Errorf("error generating UUID: %w", err)
-    }
+	// Generate a new UUID v4
+	userID, err := uuid.NewV4()
+	if err != nil {
+		return user, fmt.Errorf("error generating UUID: %w", err)
+	}
 
 	// Set signup date and last seen date to the current time
 	signupDate := globaltime.Now().String()
 	lastSeenDate := globaltime.Now().String()
 
-    err = db.c.QueryRow(`
+	err = db.c.QueryRow(`
     INSERT INTO 
         User (id, username, signup_date, last_seen, followers_count, following_count) 
     VALUES 
@@ -72,13 +72,13 @@ func (db *appdbimpl) CreateUser(username string) (structs.User, error) {
         bio, 
         profile_image_id, 
         followers_count, 
-        following_count`, 
-    userID.String(), username, signupDate, lastSeenDate, 0, 0).Scan(&user.UserID, &user.Username, &user.SignUpDate, &user.LastSeenDate, &user.Bio, &user.ProfileImage, &user.Followers, &user.Following)
-    if err != nil {
+        following_count`,
+		userID.String(), username, signupDate, lastSeenDate, 0, 0).Scan(&user.UserID, &user.Username, &user.SignUpDate, &user.LastSeenDate, &user.Bio, &user.ProfileImage, &user.Followers, &user.Following)
+	if err != nil {
 		fmt.Println(err)
-        return user, fmt.Errorf("error creating user: %w", err)
-    }
-    return user, nil
+		return user, fmt.Errorf("error creating user: %w", err)
+	}
+	return user, nil
 }
 
 // SearchUsername returns a list of users whose username is similar to the given one
@@ -97,11 +97,11 @@ func (db *appdbimpl) SearchUsername(username string) ([]structs.User, error) {
 	FROM 
 		User 
 	WHERE 
-		username LIKE ?`, 
-	"%"+username+"%")
-	
+		username LIKE ?`,
+		"%"+username+"%")
+
 	if err != nil {
-		fmt.Println("error",err)
+		fmt.Println("error", err)
 		return users, fmt.Errorf("error searching username: %w", err)
 	}
 	defer rows.Close()
@@ -109,7 +109,7 @@ func (db *appdbimpl) SearchUsername(username string) ([]structs.User, error) {
 		var user structs.User
 		err = rows.Scan(&user.UserID, &user.Username, &user.SignUpDate, &user.LastSeenDate, &user.Bio, &user.ProfileImage, &user.Followers, &user.Following)
 		if err != nil {
-			fmt.Println("error",err)
+			fmt.Println("error", err)
 			return users, fmt.Errorf("error scanning user: %w", err)
 		}
 		users = append(users, user)
@@ -131,8 +131,8 @@ func (db *appdbimpl) UpdateUser(userID string, user structs.User) error {
 		followers_count = ?, 
 		following_count = ? 
 	WHERE 
-		id = ?`, 
-	user.Username, user.SignUpDate, user.LastSeenDate, user.Bio, user.ProfileImage, user.Followers, user.Following, userID)
+		id = ?`,
+		user.Username, user.SignUpDate, user.LastSeenDate, user.Bio, user.ProfileImage, user.Followers, user.Following, userID)
 	if err != nil {
 		return fmt.Errorf("error updating user: %w", err)
 	}
@@ -145,8 +145,8 @@ func (db *appdbimpl) DeleteUser(userID string) error {
 	DELETE FROM 
 		User 
 	WHERE 
-		id = ?`, 
-	userID)
+		id = ?`,
+		userID)
 	if err != nil {
 		return fmt.Errorf("error deleting user: %w", err)
 	}

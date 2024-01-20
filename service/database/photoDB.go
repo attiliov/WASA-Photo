@@ -2,11 +2,11 @@ package database
 
 import (
 	"fmt"
+	"github.com/gofrs/uuid"
 	"io"
 	"mime/multipart"
 	"os"
 	"path/filepath"
-	"github.com/gofrs/uuid"
 )
 
 /* This file contains the implementation of every function used to interact with the photo table

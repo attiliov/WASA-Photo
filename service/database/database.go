@@ -45,7 +45,6 @@ import (
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-
 	GetUser(username string) (structs.User, error)
 	CreateUser(username string) (structs.User, error)
 	SearchUsername(username string) ([]structs.User, error)
@@ -103,31 +102,30 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	// ---Initialize the database
-    // Get the directory of the current file
-    _, filename, _, ok := runtime.Caller(0)
-    if !ok {
-        return nil, errors.New("unable to get current directory")
-    }
-    dir := filepath.Dir(filename)
-    // Read the init.sql file
-    initSQL, err := os.ReadFile(filepath.Join(dir, "init.sql"))
-    if err != nil {
-        return nil, fmt.Errorf("error reading init.sql: %w", err)
-    }
-    // Split the SQL statements
-    statements := strings.Split(string(initSQL), ";")
-    // Execute each statement
-    for _, statement := range statements {
-        statement = strings.TrimSpace(statement) // remove leading and trailing spaces
-        if statement != "" {
-            _, err = db.Exec(statement)
-            if err != nil {
-                return nil, fmt.Errorf("error executing statement %q: %w", statement, err)
-            }
-        }
-    }
+	// Get the directory of the current file
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		return nil, errors.New("unable to get current directory")
+	}
+	dir := filepath.Dir(filename)
+	// Read the init.sql file
+	initSQL, err := os.ReadFile(filepath.Join(dir, "init.sql"))
+	if err != nil {
+		return nil, fmt.Errorf("error reading init.sql: %w", err)
+	}
+	// Split the SQL statements
+	statements := strings.Split(string(initSQL), ";")
+	// Execute each statement
+	for _, statement := range statements {
+		statement = strings.TrimSpace(statement) // remove leading and trailing spaces
+		if statement != "" {
+			_, err = db.Exec(statement)
+			if err != nil {
+				return nil, fmt.Errorf("error executing statement %q: %w", statement, err)
+			}
+		}
+	}
 
-	
 	return &appdbimpl{
 		c: db,
 	}, nil

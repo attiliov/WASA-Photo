@@ -2,9 +2,9 @@ package api
 
 import (
 	"encoding/json"
-	"net/http"
 	"github.com/attiliov/WASA-Photo/service/structs"
 	"github.com/julienschmidt/httprouter"
+	"net/http"
 )
 
 /*
@@ -16,7 +16,6 @@ import (
 		- PUT /users/:userId/posts/postId/comments/commentId
 		- DELETE /users/:userId/posts/postId/comments/:commentId
 */
-
 
 func (rt *_router) getPostComments(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
@@ -49,7 +48,6 @@ func (rt *_router) getPostComments(w http.ResponseWriter, r *http.Request, ps ht
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	
 
 	// Create a response object
 	response := structs.CommentStream{Comments: comments}
@@ -60,7 +58,7 @@ func (rt *_router) getPostComments(w http.ResponseWriter, r *http.Request, ps ht
 }
 
 func (rt *_router) createComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	// Get the post ID from the URL
 	postID := ps.ByName("postId")
 
@@ -92,7 +90,7 @@ func (rt *_router) createComment(w http.ResponseWriter, r *http.Request, ps http
 	}
 
 	// Create the comment
-	err = rt.db.CreateComment(postID ,comment)
+	err = rt.db.CreateComment(postID, comment)
 	if err != nil {
 		rt.baseLogger.Println("err: ", err)
 		// If there was an error creating the comment, return a 500 status
@@ -126,7 +124,7 @@ func (rt *_router) getComment(w http.ResponseWriter, r *http.Request, ps httprou
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	
+
 	// Get the comment
 	comment, err := rt.db.GetComment(commentID)
 	if err != nil {
@@ -142,7 +140,7 @@ func (rt *_router) getComment(w http.ResponseWriter, r *http.Request, ps httprou
 }
 
 func (rt *_router) editComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	// Get the comment ID from the URL
 	commentID := ps.ByName("commentId")
 
@@ -176,10 +174,10 @@ func (rt *_router) editComment(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// Set the header and write the response body
 	w.WriteHeader(http.StatusOK)
-} 
+}
 
 func (rt *_router) deleteComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	// Get the comment ID from the URL
 	commentID := ps.ByName("commentId")
 

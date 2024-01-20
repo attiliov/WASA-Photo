@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/gofrs/uuid"
 	"github.com/attiliov/WASA-Photo/service/structs"
+	"github.com/gofrs/uuid"
 )
 
 /* This file contains the implementation of every function used to interact with the comment table
@@ -31,8 +31,8 @@ func (db *appdbimpl) GetPostComments(postID string) ([]structs.Comment, error) {
 	FROM 
 		Comment 
 	WHERE 
-		post_id = ?`, 
-	postID)
+		post_id = ?`,
+		postID)
 	if err != nil {
 		return comments, fmt.Errorf("error getting comments: %w", err)
 	}
@@ -40,7 +40,7 @@ func (db *appdbimpl) GetPostComments(postID string) ([]structs.Comment, error) {
 
 	for rows.Next() {
 		var comment structs.Comment
-		err := rows.Scan(&comment.CommentID, &comment.AuthorID, &comment.AuthorUsername,  &comment.CreationDate, &comment.Caption, &comment.LikeCount)
+		err := rows.Scan(&comment.CommentID, &comment.AuthorID, &comment.AuthorUsername, &comment.CreationDate, &comment.Caption, &comment.LikeCount)
 		if err != nil {
 			return comments, fmt.Errorf("error getting comment: %w", err)
 		}
@@ -71,20 +71,19 @@ func (db *appdbimpl) CreateComment(postID string, comment structs.Comment) error
 		return errors.New("author does not exist")
 	}
 
-	 
 	// Generate a new UUID v4
-    id, err := uuid.NewV4()
-    if err != nil {
-        return fmt.Errorf("error generating UUID: %w", err)
-    }
-    comment.CommentID = id.String()
+	id, err := uuid.NewV4()
+	if err != nil {
+		return fmt.Errorf("error generating UUID: %w", err)
+	}
+	comment.CommentID = id.String()
 
 	_, err = db.c.Exec(`
 	INSERT INTO 
 		Comment(id, username, post_id, author_id, creation_date, caption, like_count) 
 	VALUES 
-		(?, ?, ?, ?, ?, ?, ?)`, 
-	comment.CommentID, comment.AuthorUsername, postID, comment.AuthorID, comment.CreationDate, comment.Caption, 0)
+		(?, ?, ?, ?, ?, ?, ?)`,
+		comment.CommentID, comment.AuthorUsername, postID, comment.AuthorID, comment.CreationDate, comment.Caption, 0)
 	if err != nil {
 		return fmt.Errorf("error creating comment: %w", err)
 	}
@@ -97,11 +96,10 @@ func (db *appdbimpl) CreateComment(postID string, comment structs.Comment) error
 		comment_count = comment_count + 1
 	WHERE
 		id = ?`,
-	postID)
+		postID)
 	if err != nil {
 		return fmt.Errorf("error updating post's comment count: %w", err)
 	}
-
 
 	return nil
 }
@@ -120,8 +118,8 @@ func (db *appdbimpl) GetComment(commentID string) (structs.Comment, error) {
 	FROM 
 		Comment 
 	WHERE 
-		id = ?`, 
-	commentID).Scan(&comment.CommentID, &comment.AuthorID, &comment.AuthorUsername,  &comment.CreationDate, &comment.Caption, &comment.LikeCount)
+		id = ?`,
+		commentID).Scan(&comment.CommentID, &comment.AuthorID, &comment.AuthorUsername, &comment.CreationDate, &comment.Caption, &comment.LikeCount)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return comment, errors.New("comment does not exist")
@@ -149,8 +147,8 @@ func (db *appdbimpl) EditComment(commentID string, comment structs.Comment) erro
 	SET 
 		caption = ? 
 	WHERE 
-		id = ?`, 
-	comment.Caption, commentID)
+		id = ?`,
+		comment.Caption, commentID)
 	if err != nil {
 		return fmt.Errorf("error editing comment: %w", err)
 	}

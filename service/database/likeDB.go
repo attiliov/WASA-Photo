@@ -26,8 +26,8 @@ func (db *appdbimpl) GetPostLikes(postID string) ([]structs.Like, error) {
 	FROM 
 		PostLike 
 	WHERE 
-		post_id = ?`, 
-	postID)
+		post_id = ?`,
+		postID)
 	if err != nil {
 		return likes, fmt.Errorf("error getting likes: %w", err)
 	}
@@ -144,8 +144,8 @@ func (db *appdbimpl) GetCommentLikes(commentID string) ([]structs.Like, error) {
 	FROM 
 		CommentLike 
 	WHERE 
-		comment_id = ?`, 
-	commentID)
+		comment_id = ?`,
+		commentID)
 	if err != nil {
 		return likes, fmt.Errorf("error getting likes: %w", err)
 	}

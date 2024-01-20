@@ -17,7 +17,6 @@ import (
 	   - DELETE /users/:userId
 */
 
-
 func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// Parse and decode the request body into a string
 	var username structs.Username
@@ -51,7 +50,6 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, _ httprout
 	json.NewEncoder(w).Encode(response)
 }
 
-
 func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
@@ -75,14 +73,13 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	if err != nil {
 		// User not found, return a 404 status
 		w.WriteHeader(http.StatusNotFound)
-		return		
+		return
 	}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
 }
-
 
 func (rt *_router) updateUserProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get the user ID from the URL
@@ -105,8 +102,6 @@ func (rt *_router) updateUserProfile(w http.ResponseWriter, r *http.Request, ps 
 		return
 	}
 
-
-
 	// Update the user with the specified ID
 	err = rt.db.UpdateUser(userID, user)
 	if err != nil {
@@ -119,7 +114,6 @@ func (rt *_router) updateUserProfile(w http.ResponseWriter, r *http.Request, ps 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(user)
 }
-
 
 func (rt *_router) deleteUserProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get the user ID from the URL

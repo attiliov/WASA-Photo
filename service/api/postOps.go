@@ -2,9 +2,9 @@ package api
 
 import (
 	"encoding/json"
-	"net/http"
-	"github.com/julienschmidt/httprouter"
 	"github.com/attiliov/WASA-Photo/service/structs"
+	"github.com/julienschmidt/httprouter"
+	"net/http"
 )
 
 /*
@@ -50,7 +50,7 @@ func (rt *_router) getUserPosts(w http.ResponseWriter, r *http.Request, ps httpr
 	json.NewEncoder(w).Encode(response)
 }
 
-func (rt *_router) createPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params){
+func (rt *_router) createPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
 
@@ -87,7 +87,6 @@ func (rt *_router) createPost(w http.ResponseWriter, r *http.Request, ps httprou
 	json.NewEncoder(w).Encode(response)
 }
 
-
 func (rt *_router) getPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get the user ID and post ID from the URL
 	userID := ps.ByName("userId")
@@ -118,7 +117,6 @@ func (rt *_router) getPost(w http.ResponseWriter, r *http.Request, ps httprouter
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(post)
 }
-
 
 func (rt *_router) editPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get the user ID and post ID from the URL
@@ -158,7 +156,6 @@ func (rt *_router) editPost(w http.ResponseWriter, r *http.Request, ps httproute
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
-
 
 func (rt *_router) deletePost(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Get the user ID and post ID from the URL

@@ -16,7 +16,7 @@ func getBearerToken(r *http.Request) (string, error) {
     parts := strings.Split(authHeader, " ")
     if len(parts) < 2 || parts[0] != "Bearer" {
         // If the Authorization header is not well-formed, return a 401 status
-        return "", errors.New("Invalid Authorization header")
+        return "", errors.New("invalid Authorization header")
     }
 
     // The second part of the Authorization header is the bearer token

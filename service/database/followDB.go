@@ -126,7 +126,7 @@ func (db *appdbimpl) FollowUser(userID string, followingID string) error {
 	if err != nil {
 		return fmt.Errorf("updating followers counter: %w", err)
 	}
-	
+
 	return nil
 }
 
@@ -147,7 +147,6 @@ func (db *appdbimpl) UnfollowUser(userID string, followingID string) error {
 	if !followExists {
 		return nil
 	}
-
 
 	// Delete the follow
 	_, err = db.c.Exec(`

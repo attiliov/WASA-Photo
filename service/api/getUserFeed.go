@@ -15,7 +15,7 @@ import (
 */
 
 func (rt *_router) getFeed(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
 

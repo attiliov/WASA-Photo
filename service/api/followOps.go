@@ -18,7 +18,7 @@ import (
 */
 
 func (rt *_router) getFollowersList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
 
@@ -35,7 +35,6 @@ func (rt *_router) getFollowersList(w http.ResponseWriter, r *http.Request, ps h
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-
 
 	// Get the followers of the specified user
 	followers, err := rt.db.GetFollowersList(userID)
@@ -88,7 +87,7 @@ func (rt *_router) getFollowingsList(w http.ResponseWriter, r *http.Request, ps 
 }
 
 func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
 
@@ -121,7 +120,7 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 }
 
 func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
 

@@ -17,7 +17,7 @@ import (
 */
 
 func (rt *_router) getUserBanList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
 
@@ -39,7 +39,7 @@ func (rt *_router) getUserBanList(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	// Create a response object
-	response :=  structs.UserCollection{Users: bannedUsers}
+	response := structs.UserCollection{Users: bannedUsers}
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
@@ -47,7 +47,7 @@ func (rt *_router) getUserBanList(w http.ResponseWriter, r *http.Request, ps htt
 }
 
 func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
 
@@ -75,7 +75,7 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 }
 
 func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
 

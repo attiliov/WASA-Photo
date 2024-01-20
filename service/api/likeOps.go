@@ -57,7 +57,6 @@ func (rt *_router) getPostLikes(w http.ResponseWriter, r *http.Request, ps httpr
 	json.NewEncoder(w).Encode(response)
 }
 
-
 func (rt *_router) likePost(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	// Get the post ID from the URL
@@ -84,7 +83,6 @@ func (rt *_router) likePost(w http.ResponseWriter, r *http.Request, ps httproute
 
 	// Set the header and write the response body
 	w.WriteHeader(http.StatusOK)
-	return
 }
 
 func (rt *_router) unlikePost(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -113,7 +111,6 @@ func (rt *_router) unlikePost(w http.ResponseWriter, r *http.Request, ps httprou
 
 	// Set the header and write the response body
 	w.WriteHeader(http.StatusOK)
-	return
 }
 
 func (rt *_router) getCommentLikes(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -180,12 +177,10 @@ func (rt *_router) likeComment(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// Set the header and write the response body
 	w.WriteHeader(http.StatusOK)
-	return
-
 }
 
 func (rt *_router) unlikeComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	// Get the comment ID from the URL
 	commentID := ps.ByName("commentId")
 
@@ -210,6 +205,4 @@ func (rt *_router) unlikeComment(w http.ResponseWriter, r *http.Request, ps http
 
 	// Set the header and write the response body
 	w.WriteHeader(http.StatusOK)
-	return
 }
-

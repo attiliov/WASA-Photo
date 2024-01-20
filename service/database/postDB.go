@@ -33,8 +33,8 @@ func (db *appdbimpl) GetUserPosts(userID string) ([]structs.ResourceID, error) {
 	WHERE 
 		author_id = ?
 	ORDER BY
-		creation_date DESC`, 
-	userID)
+		creation_date DESC`,
+		userID)
 	if err != nil {
 		//fmt.Println("error getting user posts", err)
 		return posts, fmt.Errorf("error getting user posts: %w", err)
@@ -54,24 +54,24 @@ func (db *appdbimpl) GetUserPosts(userID string) ([]structs.ResourceID, error) {
 
 // AddPost adds a new post to the database
 func (db *appdbimpl) AddPost(post structs.UserPost) (structs.ResourceID, error) {
-    // Generate a new UUID v4
-    id, err := uuid.NewV4()
-    if err != nil {
-        return structs.ResourceID{}, fmt.Errorf("error generating UUID: %w", err)
-    }
-    post.PostID = id.String()
+	// Generate a new UUID v4
+	id, err := uuid.NewV4()
+	if err != nil {
+		return structs.ResourceID{}, fmt.Errorf("error generating UUID: %w", err)
+	}
+	post.PostID = id.String()
 
-    // Insert the post in the DB
-    _, err = db.c.Exec(`
+	// Insert the post in the DB
+	_, err = db.c.Exec(`
     INSERT INTO 
         Post (id, author_id, author_username, creation_date, caption, image_id, like_count, comment_count) 
     VALUES 
-        (?, ?, ?, ?, ?, ?, ?, ?)`, 
-    post.PostID,post.AuthorID, post.AuthorUsername, post.CreationDate, post.Caption, post.Image, 0, 0)
-    if err != nil {
-        return structs.ResourceID{ResourceID: post.PostID}, fmt.Errorf("error inserting post: %w", err)
-    }
-    return structs.ResourceID{ResourceID: post.PostID}, nil
+        (?, ?, ?, ?, ?, ?, ?, ?)`,
+		post.PostID, post.AuthorID, post.AuthorUsername, post.CreationDate, post.Caption, post.Image, 0, 0)
+	if err != nil {
+		return structs.ResourceID{ResourceID: post.PostID}, fmt.Errorf("error inserting post: %w", err)
+	}
+	return structs.ResourceID{ResourceID: post.PostID}, nil
 }
 
 // GetPost returns the post with the given postID
@@ -90,8 +90,8 @@ func (db *appdbimpl) GetPost(postID string) (structs.UserPost, error) {
 	FROM 
 		Post 
 	WHERE 
-		id = ?`, 
-	postID).Scan(&post.PostID, &post.AuthorID, &post.AuthorUsername, &post.CreationDate, &post.Caption, &post.Image, &post.LikeCount, &post.CommentCount)
+		id = ?`,
+		postID).Scan(&post.PostID, &post.AuthorID, &post.AuthorUsername, &post.CreationDate, &post.Caption, &post.Image, &post.LikeCount, &post.CommentCount)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return post, fmt.Errorf("post not found: %w", err)
@@ -114,8 +114,8 @@ func (db *appdbimpl) UpdatePost(postID string, post structs.UserPost) error {
 		like_count = ?, 
 		comment_count = ? 
 	WHERE 
-		id = ?`, 
-	post.AuthorID, post.AuthorUsername, post.Caption, post.Image, post.LikeCount, post.CommentCount, string(postID))
+		id = ?`,
+		post.AuthorID, post.AuthorUsername, post.Caption, post.Image, post.LikeCount, post.CommentCount, string(postID))
 	if err != nil {
 		return fmt.Errorf("error updating post: %w", err)
 	}
@@ -128,14 +128,13 @@ func (db *appdbimpl) DeletePost(postID string) error {
 	DELETE FROM 
 		Post 
 	WHERE 
-		id = ?`, 
-	postID)
+		id = ?`,
+		postID)
 	if err != nil {
 		return fmt.Errorf("error deleting post: %w", err)
 	}
 	return nil
 }
-
 
 // GetUserFeed returns the posts of the users followed by the user with the given userID
 func (db *appdbimpl) GetUserFeed(userID string) ([]structs.ResourceID, error) {
@@ -148,8 +147,8 @@ func (db *appdbimpl) GetUserFeed(userID string) ([]structs.ResourceID, error) {
 	INNER JOIN 
 		Follow ON Post.author_id = Follow.following
 	WHERE 
-		Follow.follower = ?`, 
-	userID)
+		Follow.follower = ?`,
+		userID)
 	if err != nil {
 		return posts, fmt.Errorf("error getting user feed: %w", err)
 	}
