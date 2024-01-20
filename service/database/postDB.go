@@ -116,7 +116,7 @@ func (db *appdbimpl) UpdatePost(postID string, post structs.UserPost) error {
 		comment_count = ? 
 	WHERE 
 		id = ?`,
-		post.AuthorID, post.AuthorUsername, post.Caption, post.Image, post.LikeCount, post.CommentCount, string(postID))
+		post.AuthorID, post.AuthorUsername, post.Caption, post.Image, post.LikeCount, post.CommentCount, postID)
 	if err != nil {
 		return fmt.Errorf("error updating post: %w", err)
 	}

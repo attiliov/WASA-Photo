@@ -88,7 +88,7 @@ func (rt *_router) createComment(w http.ResponseWriter, r *http.Request, ps http
 	}
 
 	// Check that authorId is the same as bearer token
-	if string(comment.AuthorID) != beaerToken {
+	if comment.AuthorID != beaerToken {
 		// If the authorId is not the same as the bearer token, return a 401 status
 		w.WriteHeader(http.StatusUnauthorized)
 		return

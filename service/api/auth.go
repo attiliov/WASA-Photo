@@ -26,11 +26,11 @@ func (rt *_router) getAuthToken(w http.ResponseWriter, r *http.Request, _ httpro
 	}
 
 	// Get the user from the database
-	user, err := rt.db.GetUser(string(username.Username))
+	user, err := rt.db.GetUser(username.Username)
 
 	// If the user doesn't exist, create a new user
 	if err != nil {
-		user, err = rt.db.CreateUser(string(username.Username))
+		user, err = rt.db.CreateUser(username.Username)
 		if err != nil {
 			// If there was an error creating the user, return a 500 status
 			w.WriteHeader(http.StatusInternalServerError)
