@@ -43,7 +43,12 @@ func (rt *_router) getUserBanList(w http.ResponseWriter, r *http.Request, ps htt
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		// If there was an error encoding the response, return a 500 status
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }
 
 func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

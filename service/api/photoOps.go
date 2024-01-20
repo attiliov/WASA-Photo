@@ -73,7 +73,12 @@ func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httproute
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "image/jpeg")
 	w.WriteHeader(http.StatusOK)
-	w.Write(photo)
+	_, err = w.Write(photo)
+	if err != nil {
+		// If there was an error writing the response, return a 500 status
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }
 
 func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

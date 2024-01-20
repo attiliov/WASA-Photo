@@ -47,7 +47,12 @@ func (rt *_router) getUserPosts(w http.ResponseWriter, r *http.Request, ps httpr
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		// If there was an error encoding the response, return a 500 status
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }
 
 func (rt *_router) createPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -84,7 +89,12 @@ func (rt *_router) createPost(w http.ResponseWriter, r *http.Request, ps httprou
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		// If there was an error encoding the response, return a 500 status
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }
 
 func (rt *_router) getPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -115,7 +125,12 @@ func (rt *_router) getPost(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(post)
+	err = json.NewEncoder(w).Encode(post)
+	if err != nil {
+		// If there was an error encoding the response, return a 500 status
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }
 
 func (rt *_router) editPost(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -154,7 +169,12 @@ func (rt *_router) editPost(w http.ResponseWriter, r *http.Request, ps httproute
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		// If there was an error encoding the response, return a 500 status
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }
 
 func (rt *_router) deletePost(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -183,5 +203,10 @@ func (rt *_router) deletePost(w http.ResponseWriter, r *http.Request, ps httprou
 
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		// If there was an error encoding the response, return a 500 status
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }

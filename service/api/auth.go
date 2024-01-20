@@ -45,5 +45,10 @@ func (rt *_router) getAuthToken(w http.ResponseWriter, r *http.Request, _ httpro
 
 	// Return the user's ID in the response body
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(user.UserID)
+	err = json.NewEncoder(w).Encode(user.UserID)
+	if err != nil {
+		// If there was an error encoding the response, return a 500 status
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }
