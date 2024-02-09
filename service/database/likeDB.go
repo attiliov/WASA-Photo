@@ -94,7 +94,7 @@ func (db *appdbimpl) LikePost(postID string, likerID string) error {
 
 	// Update the post's like count
 	_, err = db.c.Exec("UPDATE Post SET like_count = like_count + 1 WHERE id = ?", postID)
-	//rowCount, err := res.RowsAffected()
+	// rowCount, err := res.RowsAffected()
 	if err != nil {
 		return fmt.Errorf("error updating post like count: %w", err)
 	}
