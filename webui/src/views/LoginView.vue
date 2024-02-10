@@ -39,12 +39,14 @@ export default {
                 // Check if the request was successful
                 if (response.status == 200 || response.status == 201) {
                     // The request was successful, the user is logged in
-                    console.log('User logged in');
                     sessionStorage.setItem("token", response.data);
-                    console.log(response.data);
+                    console.log('User logged in:', sessionStorage.getItem("token"));
 
                     // Set authentication header
                     this.$axios.defaults.headers.common['Authorization'] = `Bearer ${response.data}`;
+
+                    // Redirect to the home page
+                    this.$router.push('/home');
                 } else {
                     // The request was not successful, the user is not logged in
                     console.log('User not logged in');

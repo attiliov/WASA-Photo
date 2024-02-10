@@ -22,8 +22,11 @@
 import { ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
 
-// Replace this with your actual logic for checking if the user is logged in
-let isLoggedIn = ref(false);
+// Check if the user is logged in;
+const isLoggedIn = ref(false);
+if (sessionStorage.getItem('token')) {
+	isLoggedIn.value = true;
+}
 </script>
 
 <style>
