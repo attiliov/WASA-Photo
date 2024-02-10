@@ -1,7 +1,8 @@
-<template>
+<template >
     <div class="login-container">
+        <h1 class="welcome-message">Welcome to WASAPhoto!</h1>
         <div class="login-form">
-            <h2>Login</h2>
+            <h2 >LOGIN</h2>
             <form @submit.prevent="handleLogin">
                 <label for="username">Please, enter your username below</label>
                 <input id="username" v-model="username" type="text" required />
@@ -63,32 +64,48 @@ export default {
 
 <style scoped>
 .error {
-  color: red;
-  margin-top: -20px;
-  margin-bottom: 10px;
+    color: red;
+    margin-top: -20px;
+    margin-bottom: 10px;
 }
+
 .login-container {
     display: flex;
     justify-content: center;
+    flex-direction: column;
     align-items: center;
     min-height: 100vh;
+    background-color: #1da1f2;
+    font-family: 'Muli', sans-serif;
+}
+
+.welcome-message {
+    color: #fff;
+    font-size: 7rem;
+    margin-bottom: 140px;
+    text-align: center;
 }
 
 .login-form {
-    width: 300px;
+    width: 400px;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 20px rgba(157, 157, 157, 0.48);
     border-radius: 15px;
-    /* Add this line */
+    background-color: #fff;
 }
 
 .login-form h2 {
     text-align: center;
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 1rem;
 }
 
 .login-form label {
     display: block;
     margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: #333;
 }
 
 .login-form input {
@@ -96,13 +113,23 @@ export default {
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 5px;
-    /* Add this line */
+    border: 1px solid #ccc;
+    font-size: 1.1rem;
 }
 
 .login-form button {
     width: 100%;
     padding: 10px;
     border-radius: 5px;
-    /* Add this line */
+    border: none;
+    background-color: #15202b;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-form button:hover {
+    background-color: #333;
 }
 </style>

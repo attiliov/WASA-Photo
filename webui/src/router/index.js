@@ -5,11 +5,12 @@ import ProfileView from '../views/ProfileView.vue'
 import SearchView from '../views/SearchView.vue'
 
 const routes = [
-	{ path: '/', component: LoginView, meta: { requiresAuth: false } },
+	{ path: '/login', component: LoginView, meta: { requiresAuth: false } },
+	{ path: '/', redirect: '/login' },
 	{ path: '/home', component: HomeView, meta: { requiresAuth: true } },
 	{ path: '/profile', component: ProfileView, meta: { requiresAuth: true } },
 	{ path: '/search', component: SearchView, meta: { requiresAuth: true } },
-  ];
+];
   
   const router = createRouter({
 	history: createWebHashHistory(import.meta.env.BASE_URL),
