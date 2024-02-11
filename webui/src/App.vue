@@ -27,6 +27,14 @@
 						Profile
 					</router-link>
 				</li>
+				<li class="post">
+					<a @click="toggleNewPostForm">
+						<svg class="feather">
+							<use href="/feather-sprite-v4.29.0.svg#plus" />
+						</svg>
+						Post
+					</a>
+				</li>
 				<li>
 					<router-link to="/search">
 						<svg class="feather">
@@ -45,35 +53,45 @@
 				</li>
 			</ul>
 		</div>
+		<newPost :show="showNewPostForm" @close="toggleNewPostForm" />
+
 	</div>
 </template>
   
-<script setup>
-import { ref, watchEffect } from 'vue';
-import { useRoute } from 'vue-router';
-import { useRouter } from 'vue-router';
+<script>
+import { watch } from 'vue';
+import newPost from './components/NewPost.vue';
 
-// Get the current router
-const router = useRouter();
-
-// Get the current route
-const route = useRoute();
-
-// Determine whether to show the sidebar
-const showSidebar = ref(false);
-
-watchEffect(() => {
-	// Show the sidebar if the current route is /home, /profile, or /search
-	showSidebar.value = ['/home', '/profile', '/search'].includes(route.path);
-});
-
-const logout = () => {
-	// Remove the token from the session storage
-	sessionStorage.removeItem('token');
-	// Redirect to the login page
-	router.push('/login');
+export default {
+	components: {
+		newPost,
+	},
+	data() {
+		return {
+			showSidebar: false,
+			showNewPostForm: false,
+		};
+	},
+	methods: {
+		logout() {
+			// Remove the token from the session storage
+			sessionStorage.removeItem('token');
+			// Redirect to the login page
+			this.$router.push('/login');
+		},
+		toggleNewPostForm() {
+			this.showNewPostForm = !this.showNewPostForm;
+			// console.log('showNewPostForm: ', this.showNewPostForm);
+		},
+	},
+	mounted() {
+		// Watch for changes in the route
+		watch(() => this.$route.path, () => {
+			// Show the sidebar if the current route is /home, /profile, or /search
+			this.showSidebar = ['/home', '/profile', '/search'].includes(this.$route.path);
+		}, { immediate: true });
+	},
 };
-
 </script>
   
 <style>
@@ -85,7 +103,8 @@ const logout = () => {
 	background-color: #15202b;
 	padding: 0;
 	color: #fff;
-	margin-top: -29px;
+	margin-top: 0px;
+	bottom: 0;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -95,7 +114,7 @@ const logout = () => {
 	display: flex;
 	justify-content: center;
 	width: 100%;
-
+	margin-top: -29px;
 	border-bottom: 1px solid #393864;
 }
 
@@ -130,6 +149,7 @@ const logout = () => {
 	display: inline-block;
 	margin-left: 10%;
 	margin-top: 0px;
+
 }
 
 .sidebar-links li a:hover {
@@ -145,5 +165,10 @@ const logout = () => {
 
 .logout {
 	color: #d00000;
+	cursor: pointer;
+}
+
+.post {
+	cursor: pointer;
 }
 </style>
