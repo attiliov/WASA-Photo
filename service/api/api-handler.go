@@ -14,14 +14,14 @@ func (rt *_router) Handler() http.Handler {
 
 	rt.router.GET("/users", rt.searchUser) // TESTED
 
-	rt.router.GET("/users/:userId", rt.getUserProfile)       // TESTED
+	rt.router.GET("/users/:userId", rt.getUserProfile)       // TESTED, on frontend
 	rt.router.PUT("/users/:userId", rt.updateUserProfile)    // TESTED
 	rt.router.DELETE("/users/:userId", rt.deleteUserProfile) // TESTED
 
 	rt.router.GET("/users/:userId/posts", rt.getUserPosts) // TESTED
-	rt.router.POST("/users/:userId/posts", rt.createPost)  // TESTED TODO: add chcek that if the photo is not null, the photo is saved in the db
+	rt.router.POST("/users/:userId/posts", rt.createPost)  // TESTED, ON FRONTEND TODO: add chcek that if the photo is not null, the photo is saved in the db
 
-	rt.router.GET("/users/:userId/posts/:postId", rt.getPost)       // TESTED
+	rt.router.GET("/users/:userId/posts/:postId", rt.getPost)        // TESTED
 	rt.router.PUT("/users/:userId/posts/:postId", rt.editPost)      // TESTED
 	rt.router.DELETE("/users/:userId/posts/:postId", rt.deletePost) // TESTED
 	

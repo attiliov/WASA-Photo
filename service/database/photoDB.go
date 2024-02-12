@@ -45,7 +45,7 @@ func (db *appdbimpl) SavePhoto(userID string, photo multipart.File) (string, err
 // GetPhoto returns the photo with the given photoID
 func (db *appdbimpl) GetPhoto(userID string, photoID string) ([]byte, error) {
 	// Get the photo from the filesystem
-	filePath := filepath.Join("./photos", photoID+".jpg")
+	filePath := filepath.Join("/tmp/", photoID+".jpg")
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("error opening file: %w", err)

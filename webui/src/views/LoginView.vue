@@ -41,6 +41,7 @@ export default {
                 if (response.status == 200 || response.status == 201) {
                     // The request was successful, the user is logged in
                     sessionStorage.setItem("token", response.data);
+                    sessionStorage.setItem("username", this.username)
                     console.log('User logged in:', sessionStorage.getItem("token"));
 
                     // Set authentication header

@@ -16,7 +16,7 @@
 
                 <div class="form-group">
                     <label for="photo">Add a photo</label>
-                    <input type="file" id="photo" @change="handleFileChange" class="form-control-file">
+                    <input type="file" id="photo" ref="photo" @change="handleFileChange" class="form-control-file">
                 </div>
 
                 <div class="form-group button-group">
@@ -50,16 +50,21 @@ export default {
 
             try {
                 // Send the photo to the server
-                response = await this.$axios.post('/photos', formData, {
+                const token = sessionStorage.getItem('token');
+                let path = `/users/${token}/photos`;
+
+                let response = await this.$axios.post(path, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                    },
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
 
                 // Check if the request was successful
                 if (response.status == 200 || response.status == 201) {
                     // The request was successful, the photo was uploaded
                     console.log('Photo uploaded:', response.data);
+                    this.photoId = response.data;
                 } else {
                     // The request was not successful, the photo was not uploaded
                     console.log('Photo not uploaded');
@@ -71,14 +76,15 @@ export default {
         },
 
         handleFileChange(e) {
-            this.photo = e.target.files[0];
+            this.photo = this.$refs.photo.files[0];
             console.log(this.photo);
         },
 
         closePrompt() {
             this.$emit('close');
         },
-        submitPost() {
+
+        async submitPost() {
             // Handle the form submission here
             
             if (this.photo !== null || this.caption !== '') {
@@ -86,10 +92,51 @@ export default {
 
                 // Upload the photo if it exists
                 if (this.photo !== null) {
-                    this.uploadPhoto();
+                    await this.uploadPhoto();
                 }
-                console.log('Photoid:', this.photoId);
+
+                // Get the token and authorUsername from session storage
+                const token = sessionStorage.getItem('token');
+                const authorUsername = sessionStorage.getItem('username');
+
+                // Create the post object
+                const post = {
+                    PostID: '',
+                    AuthorUsername: authorUsername,
+                    AuthorID: token,
+                    CreationDate: new Date().toISOString(),
+                    Caption: this.caption,
+                    Image: this.photoId,
+                    LikeCount: 0,
+                    CommentCount: 0
+                };
+
+                // Post post
+                const path = `/users/${token}/posts`;
+                
+                try {
+                    const response = await this.$axios.post(path, post, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    // Check if the request was successful
+                    if (response.status == 200 || response.status == 201) {
+                        // The request was successful, the photo was uploaded
+                        console.log('Post uploaded:', response.data);
+                    } else {
+                        // The request was not successful, the photo was not uploaded
+                        console.log('Post not uploaded');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
             }
+            this.caption = "";
+            this.photoId = "";
+            this.photo = null;
             this.closePrompt();
         },
     },
