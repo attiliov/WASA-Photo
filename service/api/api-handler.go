@@ -10,7 +10,7 @@ func (rt *_router) Handler() http.Handler {
 	// Register routes
 	rt.router.GET("/context", rt.wrap(rt.getContextReply))
 
-	rt.router.POST("/session", rt.getAuthToken) // TESTED, TODO: add last seen update and chech why dates are not working properly in db
+	rt.router.POST("/session", rt.getAuthToken) // TESTED, TESTED ON FRONTEND TODO: add last seen update and chech why dates are not working properly in db
 
 	rt.router.GET("/users", rt.searchUser) // TESTED
 
@@ -24,7 +24,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.GET("/users/:userId/posts/:postId", rt.getPost)       // TESTED
 	rt.router.PUT("/users/:userId/posts/:postId", rt.editPost)      // TESTED
 	rt.router.DELETE("/users/:userId/posts/:postId", rt.deletePost) // TESTED
-
+	
 	rt.router.GET("/users/:userId/posts/:postId/likes", rt.getPostLikes) // TESTED
 
 	rt.router.PUT("/users/:userId/posts/:postId/likes/:likeId", rt.likePost)      // TESTED
@@ -54,7 +54,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.PUT("/users/:userId/banned/:bannedId", rt.banUser)      // TESTED
 	rt.router.DELETE("/users/:userId/banned/:bannedId", rt.unbanUser) // TESTED
 
-	rt.router.POST("/users/:userId/photos", rt.savePhoto)
+	rt.router.POST("/users/:userId/photos", rt.savePhoto) // TESTED ON FRONTEND
 
 	rt.router.GET("/users/:userId/photos/:photoId", rt.getPhoto)
 	rt.router.DELETE("/users/:userId/photos/:photoId", rt.deletePhoto)

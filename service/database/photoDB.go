@@ -18,28 +18,28 @@ import (
 */
 
 // SavePhoto saves a photo in the database
-func (db *appdbimpl) SavePhoto(userID string, photo multipart.File) error {
+func (db *appdbimpl) SavePhoto(userID string, photo multipart.File) (string, error) {
 	// Generate a new UUID v4
 	id, err := uuid.NewV4()
 	if err != nil {
-		return fmt.Errorf("error generating UUID: %w", err)
+		return "", fmt.Errorf("error generating UUID: %w", err)
 	}
 	newId := id.String()
 
 	// Save the photo in the filesystem on the ./photos directory with name <photoID>.jpg
-	filePath := filepath.Join("./photos", newId+".jpg")
+	filePath := filepath.Join("/tmp/", newId+".jpg")
 	file, err := os.Create(filePath)
 	if err != nil {
-		return fmt.Errorf("error creating file: %w", err)
+		return "", fmt.Errorf("error creating file: %w", err)
 	}
 	defer file.Close()
 
 	_, err = io.Copy(file, photo)
 	if err != nil {
-		return fmt.Errorf("error copying photo: %w", err)
+		return "", fmt.Errorf("error copying photo: %w", err)
 	}
 
-	return nil
+	return newId, nil
 }
 
 // GetPhoto returns the photo with the given photoID

@@ -83,7 +83,7 @@ type AppDatabase interface {
 
 	GetUserFeed(userID string) ([]structs.ResourceID, error)
 
-	SavePhoto(userID string, photo multipart.File) error
+	SavePhoto(userID string, photo multipart.File) (string, error)
 	GetPhoto(userID string, photoID string) ([]byte, error)
 	DeletePhoto(userID string, photoID string) error
 
