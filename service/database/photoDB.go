@@ -64,7 +64,7 @@ func (db *appdbimpl) GetPhoto(userID string, photoID string) ([]byte, error) {
 // DeletePhoto deletes the photo with the given photoID
 func (db *appdbimpl) DeletePhoto(userID string, photoID string) error {
 	// Delete the photo from the filesystem
-	filePath := filepath.Join("./photos", photoID+".jpg")
+	filePath := filepath.Join("/tmp/", photoID+".jpg")
 	err := os.Remove(filePath)
 	if err != nil {
 		return fmt.Errorf("error deleting file: %w", err)

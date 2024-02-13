@@ -21,10 +21,10 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.GET("/users/:userId/posts", rt.getUserPosts) // TESTED
 	rt.router.POST("/users/:userId/posts", rt.createPost)  // TESTED, ON FRONTEND TODO: add chcek that if the photo is not null, the photo is saved in the db
 
-	rt.router.GET("/users/:userId/posts/:postId", rt.getPost)        // TESTED
+	rt.router.GET("/users/:userId/posts/:postId", rt.getPost)       // TESTED
 	rt.router.PUT("/users/:userId/posts/:postId", rt.editPost)      // TESTED
 	rt.router.DELETE("/users/:userId/posts/:postId", rt.deletePost) // TESTED
-	
+
 	rt.router.GET("/users/:userId/posts/:postId/likes", rt.getPostLikes) // TESTED
 
 	rt.router.PUT("/users/:userId/posts/:postId/likes/:likeId", rt.likePost)      // TESTED
@@ -54,10 +54,10 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.PUT("/users/:userId/banned/:bannedId", rt.banUser)      // TESTED
 	rt.router.DELETE("/users/:userId/banned/:bannedId", rt.unbanUser) // TESTED
 
-	rt.router.POST("/users/:userId/photos", rt.savePhoto) // TESTED ON FRONTEND
+	rt.router.POST("/users/:userId/photos", rt.savePhoto) // TESTED on frontend
 
-	rt.router.GET("/users/:userId/photos/:photoId", rt.getPhoto)
-	rt.router.DELETE("/users/:userId/photos/:photoId", rt.deletePhoto)
+	rt.router.GET("/users/:userId/photos/:photoId", rt.getPhoto) // TESTED on frontend
+	rt.router.DELETE("/users/:userId/photos/:photoId", rt.deletePhoto) // TESTED on frontend 
 
 	rt.router.GET("/users/:userId/feed", rt.getFeed) // TESTED
 

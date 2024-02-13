@@ -116,6 +116,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	err = rt.db.DeletePhoto(userID, photoID)
 	if err != nil {
 		// If there was an error deleting the photo, return a 500 status
+		rt.baseLogger.Println("Error deleting photo: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
