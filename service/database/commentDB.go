@@ -160,6 +160,7 @@ func (db *appdbimpl) EditComment(commentID string, comment structs.Comment) erro
 
 // DeleteComment deletes the comment with the given commentID
 func (db *appdbimpl) DeleteComment(commentID string) error {
+
 	// Check if the comment exists
 	var commentExists bool
 	err := db.c.QueryRow("SELECT EXISTS(SELECT 1 FROM Comment WHERE id = ?)", commentID).Scan(&commentExists)
@@ -170,9 +171,31 @@ func (db *appdbimpl) DeleteComment(commentID string) error {
 		return errors.New("comment does not exist")
 	}
 
+	// Get the postID of the comment
+	var postID string
+	err = db.c.QueryRow("SELECT post_id FROM Comment WHERE id = ?", commentID).Scan(&postID)
+	if err != nil {
+		return fmt.Errorf("error getting postID of comment: %w", err)
+	}
+
+	// Delete the comment
 	_, err = db.c.Exec("DELETE FROM Comment WHERE id = ?", commentID)
 	if err != nil {
 		return fmt.Errorf("error deleting comment: %w", err)
 	}
+
+	// Update the post's comments count
+	_, err = db.c.Exec(`
+	UPDATE
+		Post
+	SET
+		comment_count = comment_count - 1
+	WHERE
+		id = ?`,
+		postID)
+	if err != nil {
+		return fmt.Errorf("error updating post's comment count: %w", err)
+	}
+	
 	return nil
 }
