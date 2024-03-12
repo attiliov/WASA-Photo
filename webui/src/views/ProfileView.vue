@@ -10,7 +10,7 @@
                     <div><strong>{{ user.following }}</strong> following</div>
                 </div>
             </div>
-            <div class="profile-actions">
+            <div v-if="isOwner" class="profile-actions">
                 <button @click="openEditModal" class="edit-profile-button">Edit</button>
                 <button @click="deleteProfile" class="delete-profile-button">Delete</button>
             </div>
@@ -66,6 +66,11 @@ export default {
             },
             posts: [],
         };
+    },
+    computed: {
+        isOwner() {
+            return this.user.userId === sessionStorage.getItem("token");
+        }
     },
     methods: {
         async fetchProfile() {
