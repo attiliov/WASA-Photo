@@ -4,7 +4,7 @@
             <input class="search-input" v-model="searchTerm" type="text" placeholder="Search users">
             <button @click="searchUsers">Search</button>
         </div>
-        <div>
+        <div class="search-results">
             <div v-if="users.length === 0">
                 Oops, no user found :(
             </div>
@@ -37,10 +37,9 @@ export default {
     },
     methods: {
         async searchUsers() {
-            // Replace this with your actual API call
-            const response = await fetch(`/api/search?username=${this.searchTerm}`);
-            const data = await response.json();
-            this.users = data.users;
+            
+            let response = await this.$axios
+
         },
         toggleFollow(userId) {
             // Replace this with your actual follow/unfollow logic
@@ -52,8 +51,17 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 @import url('https://fonts.googleapis.com/css2?family=Muli&display=swap');
+
+.search-results {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+    border: 2px solid #e3e3e3;
+    border-radius: 10px;
+    padding: 10px;
+}
 
 .container {
     display: flex;
@@ -79,7 +87,7 @@ export default {
     padding: 10px;
     font-size: 16px;
     border: 2px solid #e3e3e3;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-right: 10px;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
@@ -115,7 +123,7 @@ button {
     color: #fff;
     padding: 10px;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     
 }
