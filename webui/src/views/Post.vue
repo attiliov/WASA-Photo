@@ -19,7 +19,7 @@
                 <button class="like-button" :class="{ 'liked': isLiked }" @click="like">Like</button>
                 <button class="comment-button" @click="showCommentModal">Comment</button>
                 <button v-if="isAuthor" class="edit-button" @click="showEditModal">Edit</button>
-                <button v-if="isAuthor" class="delete-button">Delete</button>
+                <button v-if="isAuthor" class="delete-button" @click="deletePost">Delete</button>
             </div>
         </div>
     </div>
@@ -46,6 +46,14 @@
             <button @click="submitComment">Submit Comment</button>
         </div>
     </div>
+    <div v-if="isEditCommentModalVisible" class="modal">
+        <div class="modal-content">
+            <span class="close-button" @click="hideEditCommentModal">&times;</span>
+            <p>Edit comment here:</p>
+            <textarea v-model="updatedCommentCaption" placeholder="Edit comment"></textarea>
+            <button @click="applyCommentChanges">Save Changes</button>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -67,6 +75,9 @@ export default {
             isCommentModalVisible: false,
             newComment: "",
             comments : [],
+            isEditCommentModalVisible: false,
+            updatedCommentCaption: "",
+            updatedComment: {}
         };
     },
     computed: {
@@ -279,7 +290,59 @@ export default {
 
             // Fetch the updated comments
             await this.fetchComments();
+        },
+        async deletePost() {
+            console.log("Deleting post");
+            let path = `users/${this.post.authorId}/posts/${this.post.postId}`;
+            let response = await this.$axios.delete(path, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                }
+            });
+
+            if (response.status !== 200) {
+                console.log("Error deleting post");
+            } else {
+                this.$emit("delete");
+            }
+        },
+        editComment(comment) {
+            this.isEditCommentModalVisible = true;
+            this.updatedCommentCaption = comment.caption;
+            this.updatedcommentId = comment.commentId;
+        },
+        async applyCommentChanges() {
+            let path = `users/${this.post.authorId}/posts/${this.post.postId}/comments/${this.updatedcommentId}`;
+
+            let newComment = {
+                commentId: this.updatedcommentId,
+                authorUsername: sessionStorage.getItem('username'),
+                authorId: sessionStorage.getItem('token'),
+                creationDate: new Date().toISOString(),
+                caption: this.updatedCommentCaption,
+                likeCount: 0
+            
+            };
+
+            const response = await this.$axios.put(path, newComment, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                }
+            });
+
+            if (response.status !== 200) {
+                console.log("Error updating comment");
+            } else {
+                // Fetch the comments again
+                await this.fetchComments();
+            }
+            this.hideEditCommentModal();
+        },
+        hideEditCommentModal() {
+            this.isEditCommentModalVisible = false;
         }
+        
+        
     },
     created() {
         this.fetchLikes();
