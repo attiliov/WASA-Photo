@@ -17,15 +17,19 @@ import (
 	   - DELETE /users/:userId
 */
 
-func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	// Parse and decode the request body into a string
-	var username structs.Username
-	err := json.NewDecoder(r.Body).Decode(&username)
+func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	
+	// Get requesterId
+	requesterId, err := getBearerToken(r)
 	if err != nil {
-		// If there is something wrong with the request body, return a 400 status
+		// If there was an error getting the bearer token, return a 400 status
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	// Parse the request parameter into a Username object
+	var username structs.Username
+	username.Username = r.URL.Query().Get("username")
 
 	// Check that the username is not empty
 	if username.Username == "" {
@@ -41,6 +45,21 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, _ httprout
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	// Filter users who banned the requester using rt.db.IsBanned
+	filteredUsers := make([]structs.User, 0)
+	for _, user := range users {
+		isBanned, err := rt.db.IsBanned(user.UserID, requesterId)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		if !isBanned {
+			filteredUsers = append(filteredUsers, user)
+		}
+	}
+	users = filteredUsers	
+	
 
 	// Create a response object
 	response := structs.UserCollection{Users: users}

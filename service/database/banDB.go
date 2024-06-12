@@ -34,6 +34,7 @@ func (db *appdbimpl) IsBanned(userID string, bannedID string) (bool, error) {
 // GetUserBanList returns all the users banned by the user with the given userID
 func (db *appdbimpl) GetUserBanList(userID string) ([]structs.User, error) {
 	var bannedUsers []structs.User
+
 	rows, err := db.c.Query(`
 		SELECT 
 			User.id,

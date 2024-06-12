@@ -206,17 +206,19 @@ export default {
             });
 
             if (response.status === 200) {
-                for (let post of response.data.posts) {
-                    let postResponse = await this.$axios.get(`/users/${token}/posts/${post.resourceId}`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
+                if (response.data.posts !== null) {
+                    for (let post of response.data.posts) {
+                        let postResponse = await this.$axios.get(`/users/${token}/posts/${post.resourceId}`, {
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
 
-                    if (postResponse.status === 200) {
-                        this.posts.push(postResponse.data);
-                    } else {
-                        console.log('Failed to fetch post');
+                        if (postResponse.status === 200) {
+                            this.posts.push(postResponse.data);
+                        } else {
+                            console.log('Failed to fetch post');
+                        }
                     }
                 }
             } else {
