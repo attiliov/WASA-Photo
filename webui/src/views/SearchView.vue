@@ -14,7 +14,7 @@
                     <img :src="profileImagePath(user)" alt="User profile image" class="user-image">
                     <div class="user-info">
                         <h2>{{ user.username }}</h2>
-                        <button @click="toggleFollow(user.userId)">
+                        <button @click="toggleFollow(user.userId)" v-if="!isBanned(user.userId)">
                             {{ isFollowing(user.userId) ? 'Unfollow' : 'Follow' }}
                         </button>
                         <button @click="toggleBan(user.userId)" v-if="user.userId !== requestingUserId">
@@ -110,6 +110,11 @@ export default {
                         this.banned.push({ userId });
                     }
                 });
+
+                // if is following, unfollow
+                if (this.isFollowing(userId)) {
+                    this.toggleFollow(userId);
+                }
             }
         },
         profileImagePath(user){
