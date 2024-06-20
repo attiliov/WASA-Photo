@@ -1,67 +1,174 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-</script>
-<script>
-export default {}
-</script>
-
 <template>
+	<div>
+		<!-- The router-view will automatically render the correct component -->
+		<router-view></router-view>
 
-	<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-		<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#/">Example App</a>
-		<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-	</header>
+		<!-- Sidebar with links -->
+		<div class="sidebar" v-if="showSidebar">
 
-	<div class="container-fluid">
-		<div class="row">
-			<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-				<div class="position-sticky pt-3 sidebar-sticky">
-					<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-						<span>General</span>
-					</h6>
-					<ul class="nav flex-column">
-						<li class="nav-item">
-							<RouterLink to="/" class="nav-link">
-								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#home"/></svg>
-								Home
-							</RouterLink>
-						</li>
-						<li class="nav-item">
-							<RouterLink to="/link1" class="nav-link">
-								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#layout"/></svg>
-								Menu item 1
-							</RouterLink>
-						</li>
-						<li class="nav-item">
-							<RouterLink to="/link2" class="nav-link">
-								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#key"/></svg>
-								Menu item 2
-							</RouterLink>
-						</li>
-					</ul>
+			<div class="title-container">
+				<h2 class="sidebar-title">WASAPhoto</h2>
+			</div>
 
-					<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-						<span>Secondary menu</span>
-					</h6>
-					<ul class="nav flex-column">
-						<li class="nav-item">
-							<RouterLink :to="'/some/' + 'variable_here' + '/path'" class="nav-link">
-								<svg class="feather"><use href="/feather-sprite-v4.29.0.svg#file-text"/></svg>
-								Item 1
-							</RouterLink>
-						</li>
-					</ul>
-				</div>
-			</nav>
-
-			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-				<RouterView />
-			</main>
+			<ul class="sidebar-links">
+				<li>
+					<router-link to="/home">
+						<svg class="feather">
+							<use href="/feather-sprite-v4.29.0.svg#home" />
+						</svg>
+						Home
+					</router-link>
+				</li>
+				<li>
+					<router-link to="/profile">
+						<svg class="feather">
+							<use href="/feather-sprite-v4.29.0.svg#user" />
+						</svg>
+						Profile
+					</router-link>
+				</li>
+				<li class="post">
+					<a @click="toggleNewPostForm">
+						<svg class="feather">
+							<use href="/feather-sprite-v4.29.0.svg#plus" />
+						</svg>
+						Post
+					</a>
+				</li>
+				<li>
+					<router-link to="/search">
+						<svg class="feather">
+							<use href="/feather-sprite-v4.29.0.svg#search" />
+						</svg>
+						Search
+					</router-link>
+				</li>
+				<li class="logout">
+					<a @click="logout">
+						<svg class="feather">
+							<use href="/feather-sprite-v4.29.0.svg#log-out" />
+						</svg>
+						Logout
+					</a>
+				</li>
+			</ul>
 		</div>
+		<newPost :show="showNewPostForm" @close="toggleNewPostForm" />
+
 	</div>
 </template>
+  
+<script>
+import { watch } from 'vue';
+import newPost from './components/NewPost.vue';
 
+export default {
+	components: {
+		newPost,
+	},
+	data() {
+		return {
+			showSidebar: false,
+			showNewPostForm: false,
+		};
+	},
+	methods: {
+		logout() {
+			// Remove the token from the session storage
+			sessionStorage.removeItem('token');
+			// Redirect to the login page
+			this.$router.push('/login');
+		},
+		toggleNewPostForm() {
+			this.showNewPostForm = !this.showNewPostForm;
+			// console.log('showNewPostForm: ', this.showNewPostForm);
+		},
+	},
+	mounted() {
+		// Watch for changes in the route
+		watch(() => this.$route.path, () => {
+			// Show the sidebar if the current route is /home, /profile, or /search
+			this.showSidebar = ['/home', '/profile', '/search'].includes(this.$route.path);
+		}, { immediate: true });
+	},
+};
+</script>
+  
 <style>
+.sidebar {
+	position: fixed;
+	left: 0;
+	width: 370px;
+	height: 100%;
+	background-color: #15202b;
+	padding: 0;
+	color: #fff;
+	margin-top: 0px;
+	bottom: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+
+.title-container {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	margin-top: -29px;
+	border-bottom: 1px solid #393864;
+}
+
+.sidebar-title {
+	align-self: flex-start;
+	/* Add this line */
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 44px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.sidebar-links {
+	list-style-type: none;
+	padding: 0;
+}
+
+.sidebar-links li {
+	margin-bottom: 0px;
+	margin-top: 0px;
+}
+
+.sidebar-links li a {
+	color: #fff;
+	text-decoration: none;
+	font-size: 22px;
+	font-weight: bold;
+	transition: background-color 0.3s ease;
+	padding: 10px;
+	border-radius: 40px;
+	display: inline-block;
+	margin-left: 10%;
+	margin-top: 0px;
+
+}
+
+.sidebar-links li a:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+	padding-right: 30px;
+}
+
+.feather {
+	margin-right: 17px;
+	width: 30px !important;
+	height: 30px !important;
+}
+
+.logout {
+	color: #d00000;
+	cursor: pointer;
+}
+
+.post {
+	cursor: pointer;
+}
 </style>

@@ -72,7 +72,7 @@ type Success struct {
 }
 
 type Like struct {
-	Resource string `json:"resourceId"` //The post or the comment
+	Resource string `json:"resourceId"` // The post or the comment
 	UserID   string `json:"userId"`
 	Username string `json:"username"`
 }

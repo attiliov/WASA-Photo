@@ -68,7 +68,7 @@ func (rt *_router) createComment(w http.ResponseWriter, r *http.Request, ps http
 	postID := ps.ByName("postId")
 
 	// Get the user ID from the URL
-	//userID := ps.ByName("userId")
+	// userID := ps.ByName("userId")
 
 	// Get the comment from the request body
 	var comment structs.Comment
@@ -134,7 +134,7 @@ func (rt *_router) getComment(w http.ResponseWriter, r *http.Request, ps httprou
 	comment, err := rt.db.GetComment(commentID)
 	if err != nil {
 		// If there was an error getting the comment, return a 500 status
-		//rt.baseLogger.Println("err: ", err)
+		// rt.baseLogger.Println("err: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -155,7 +155,7 @@ func (rt *_router) editComment(w http.ResponseWriter, r *http.Request, ps httpro
 	commentID := ps.ByName("commentId")
 
 	// Get the user ID from the URL
-	//userID := ps.ByName("userId")
+	// userID := ps.ByName("userId")
 
 	// Get the comment from the request body
 	var comment structs.Comment
@@ -192,7 +192,7 @@ func (rt *_router) deleteComment(w http.ResponseWriter, r *http.Request, ps http
 	commentID := ps.ByName("commentId")
 
 	// Get the user ID from the URL
-	//userID := ps.ByName("userId")
+	// userID := ps.ByName("userId")
 
 	// Get comment author id
 	comment, err := rt.db.GetComment(commentID)

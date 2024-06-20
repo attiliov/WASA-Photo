@@ -18,34 +18,34 @@ import (
 */
 
 // SavePhoto saves a photo in the database
-func (db *appdbimpl) SavePhoto(userID string, photo multipart.File) error {
+func (db *appdbimpl) SavePhoto(userID string, photo multipart.File) (string, error) {
 	// Generate a new UUID v4
 	id, err := uuid.NewV4()
 	if err != nil {
-		return fmt.Errorf("error generating UUID: %w", err)
+		return "", fmt.Errorf("error generating UUID: %w", err)
 	}
 	newId := id.String()
 
 	// Save the photo in the filesystem on the ./photos directory with name <photoID>.jpg
-	filePath := filepath.Join("./photos", newId+".jpg")
+	filePath := filepath.Join("/tmp/", newId+".jpg")
 	file, err := os.Create(filePath)
 	if err != nil {
-		return fmt.Errorf("error creating file: %w", err)
+		return "", fmt.Errorf("error creating file: %w", err)
 	}
 	defer file.Close()
 
 	_, err = io.Copy(file, photo)
 	if err != nil {
-		return fmt.Errorf("error copying photo: %w", err)
+		return "", fmt.Errorf("error copying photo: %w", err)
 	}
 
-	return nil
+	return newId, nil
 }
 
 // GetPhoto returns the photo with the given photoID
 func (db *appdbimpl) GetPhoto(userID string, photoID string) ([]byte, error) {
 	// Get the photo from the filesystem
-	filePath := filepath.Join("./photos", photoID+".jpg")
+	filePath := filepath.Join("/tmp/", photoID+".jpg")
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("error opening file: %w", err)
@@ -64,7 +64,7 @@ func (db *appdbimpl) GetPhoto(userID string, photoID string) ([]byte, error) {
 // DeletePhoto deletes the photo with the given photoID
 func (db *appdbimpl) DeletePhoto(userID string, photoID string) error {
 	// Delete the photo from the filesystem
-	filePath := filepath.Join("./photos", photoID+".jpg")
+	filePath := filepath.Join("/tmp/", photoID+".jpg")
 	err := os.Remove(filePath)
 	if err != nil {
 		return fmt.Errorf("error deleting file: %w", err)

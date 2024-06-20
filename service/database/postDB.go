@@ -156,7 +156,7 @@ func (db *appdbimpl) GetUserFeed(userID string) ([]structs.ResourceID, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var post structs.ResourceID
-		err := rows.Scan(&post)
+		err := rows.Scan(&post.ResourceID)
 		if err != nil {
 			return posts, fmt.Errorf("error scanning user feed: %w", err)
 		}

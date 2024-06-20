@@ -106,7 +106,7 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 
 	// Check authorization
 	beaerToken, err := getBearerToken(r)
-	if err != nil || beaerToken != followingID {
+	if err != nil || beaerToken != userID {
 		// If there was an error getting the bearer token, return a 401 status
 		w.WriteHeader(http.StatusUnauthorized)
 		return
@@ -144,7 +144,7 @@ func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 
 	// Check authorization
 	beaerToken, err := getBearerToken(r)
-	if err != nil || beaerToken != followingID {
+	if err != nil || beaerToken != userID {
 		// If there was an error getting the bearer token, return a 401 status
 		w.WriteHeader(http.StatusUnauthorized)
 		return

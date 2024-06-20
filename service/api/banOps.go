@@ -21,6 +21,13 @@ func (rt *_router) getUserBanList(w http.ResponseWriter, r *http.Request, ps htt
 	// Get the user ID from the URL
 	userID := ps.ByName("userId")
 
+	// Check that a user with userID exists
+	_, err := rt.db.GetUser(userID)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
 	// Check authorization
 	beaerToken, err := getBearerToken(r)
 	if err != nil || beaerToken != userID {
