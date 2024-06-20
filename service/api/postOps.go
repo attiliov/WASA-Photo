@@ -86,7 +86,7 @@ func (rt *_router) createPost(w http.ResponseWriter, r *http.Request, ps httprou
 
 	// Create a response object
 	response := structs.Success{Message: "Post created successfully", Body: post_id}
-	
+
 	// Set the header and write the response body
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(response)

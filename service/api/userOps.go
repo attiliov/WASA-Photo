@@ -18,7 +18,7 @@ import (
 */
 
 func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	// Get requesterId
 	requesterId, err := getBearerToken(r)
 	if err != nil {
@@ -58,8 +58,7 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprou
 			filteredUsers = append(filteredUsers, user)
 		}
 	}
-	users = filteredUsers	
-	
+	users = filteredUsers
 
 	// Create a response object
 	response := structs.UserCollection{Users: users}

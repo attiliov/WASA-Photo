@@ -196,6 +196,6 @@ func (db *appdbimpl) DeleteComment(commentID string) error {
 	if err != nil {
 		return fmt.Errorf("error updating post's comment count: %w", err)
 	}
-	
+
 	return nil
 }

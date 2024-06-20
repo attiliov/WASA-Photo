@@ -56,8 +56,8 @@ func (rt *_router) Handler() http.Handler {
 
 	rt.router.POST("/users/:userId/photos", rt.savePhoto) // TESTED on frontend
 
-	rt.router.GET("/users/:userId/photos/:photoId", rt.getPhoto) // TESTED on frontend
-	rt.router.DELETE("/users/:userId/photos/:photoId", rt.deletePhoto) // TESTED on frontend 
+	rt.router.GET("/users/:userId/photos/:photoId", rt.getPhoto)       // TESTED on frontend
+	rt.router.DELETE("/users/:userId/photos/:photoId", rt.deletePhoto) // TESTED on frontend
 
 	rt.router.GET("/users/:userId/feed", rt.getFeed) // TESTED
 
