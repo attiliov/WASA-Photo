@@ -20,7 +20,7 @@
 					</router-link>
 				</li>
 				<li>
-					<router-link to="/profile">
+					<router-link :to="`/profile`">
 						<svg class="feather">
 							<use href="/feather-sprite-v4.29.0.svg#user" />
 						</svg>
@@ -87,8 +87,8 @@ export default {
 	mounted() {
 		// Watch for changes in the route
 		watch(() => this.$route.path, () => {
-			// Show the sidebar if the current route is /home, /profile, or /search
-			this.showSidebar = ['/home', '/profile', '/search'].includes(this.$route.path);
+			// Determine if the sidebar should be shown based on the current route
+			this.showSidebar = ['/home', '/profile', '/search'].some(path => this.$route.path.startsWith(path));
 		}, { immediate: true });
 	},
 };

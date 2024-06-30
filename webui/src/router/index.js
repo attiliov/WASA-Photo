@@ -8,7 +8,7 @@ const routes = [
 	{ path: '/login', component: LoginView, meta: { requiresAuth: false } },
 	{ path: '/', redirect: '/login' },
 	{ path: '/home', component: HomeView, meta: { requiresAuth: true } },
-	{ path: '/profile', component: ProfileView, meta: { requiresAuth: true } },
+	{ path: '/profile/:profileId?', component: ProfileView, meta: { requiresAuth: true }, props: true },
 	{ path: '/search', component: SearchView, meta: { requiresAuth: true } },
 ];
   
