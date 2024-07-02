@@ -41,6 +41,7 @@ import Post from './Post.vue';
 
 export default {
     name: "ProfileView",
+    props: ['profileId'],
     components: {
         Post
     },
@@ -78,7 +79,8 @@ export default {
             // and update the user data
 
             const token = sessionStorage.getItem('token');
-            let path = `/users/${token}`;
+            const profileId = this.profileId || token;
+            let path = `/users/${profileId}`;
 
             let response = await this.$axios.get(path, {
                 headers: {
@@ -197,7 +199,8 @@ export default {
 
         async fetchPosts() {
             const token = sessionStorage.getItem('token');
-            let path = `/users/${token}/posts`;
+            const profileId = this.profileId || token;
+            let path = `/users/${profileId}/posts`;
 
             let response = await this.$axios.get(path, {
                 headers: {
@@ -208,7 +211,7 @@ export default {
             if (response.status === 200) {
                 if (response.data.posts !== null) {
                     for (let post of response.data.posts) {
-                        let postResponse = await this.$axios.get(`/users/${token}/posts/${post.resourceId}`, {
+                        let postResponse = await this.$axios.get(`/users/${profileId}/posts/${post.resourceId}`, {
                             headers: {
                                 'Authorization': `Bearer ${token}`
                             }
@@ -233,9 +236,6 @@ export default {
     }
 };
 </script>
-
-
-
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Muli&display=swap');

@@ -11,9 +11,11 @@
 
             <div v-else>
                 <div v-for="user in users" :key="user.userId" class="user">
-                    <img :src="profileImagePath(user)" alt="User profile image" class="user-image">
+                    <img :src="profileImagePath(user)" v-if="user.profileImage" alt="User profile image" class="user-image">
+                    <img :src="'https://via.placeholder.com/150'" v-else alt="User profile image" class="user-image">
+                    
                     <div class="user-info">
-                        <h2>{{ user.username }}</h2>
+                        <h2 @click="goToProfile(user.userId)">{{ user.username }}</h2>
                         <button @click="toggleFollow(user.userId)" v-if="!isBanned(user.userId)">
                             {{ isFollowing(user.userId) ? 'Unfollow' : 'Follow' }}
                         </button>
@@ -54,6 +56,9 @@ export default {
 
             if (response.status === 200) {
                 this.users = response.data.users;
+                // Remove logged in user if present
+                this.users = this.users.filter(user => user.userId !==sessionStorage.getItem("token"));
+
             } else {
                 this.users = [];
             }
@@ -166,6 +171,9 @@ export default {
         },
         isBanned(userId) {
             return this.banned.some(user => user.userId === userId);
+        },
+        goToProfile(userId) {
+            this.$router.push(`/profile/${userId}`);
         },
     },
     mounted() {
