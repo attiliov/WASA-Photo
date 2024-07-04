@@ -67,6 +67,9 @@ components:
       description: The Universally Unique Identifier (follows the standard)
       type: string
       format: uuid
+      minLength: 36
+      maxLength: 36
+      pattern: '^[a-zA-Z0-9_-]+$'
       example: 550e8400-e29b-41d4-a716-446655440000
       readOnly: true
   
@@ -74,6 +77,9 @@ components:
       description: representation of Date and time
       type: string
       format: date-time
+      minLength: 20
+      maxLength: 20
+      pattern: '.*'
       example: 2023-01-01T00:00:00Z
       readOnly: true
     
@@ -90,6 +96,9 @@ components:
       description: An uri to an image
       type: string
       format: uri
+      minLength: 1
+      maxLength: 200
+      pattern: '.*'
       example: "localhost:8080/users/mariorossi99/posts/1/image"
       readOnly: false
 
@@ -104,8 +113,8 @@ components:
       description: A list of usersnames, 
                    it is used to keep track of the users that liked a post or a comment
       type: array
-      minLength: 0
-      maxLength: 69420
+      minItems: 0
+      maxItems: 69420
       items:
         anyOf:
           - $ref: '#/components/schemas/User/properties/username'
@@ -194,16 +203,16 @@ components:
       description: An array of posts, 
                    can either be the list of posts of a user or the list of posts of the users followed by a user 
       type: array
-      minLength: 0
-      maxLength: 69420
+      minItems: 0
+      maxItems: 69420
       items:
         $ref: '#/components/schemas/UserPost/properties/postId'
     
     commentStream:
       description: An array of comments of a post
       type: array
-      minLength: 0
-      maxLength: 69420
+      minItems: 0
+      maxItems: 69420
       items:
         $ref: '#/components/schemas/Comment'
 
@@ -212,10 +221,11 @@ components:
       type: object
       properties:
         message:
+          description: An error message
           type: string
           minLength: 1
           maxLength: 100
-          pattern: '^[a-zA-Z0-9_-]$'
+          pattern: '.*'
       required:
         - message
     
@@ -224,11 +234,13 @@ components:
       type: object
       properties:
         message:
+          description: A success message
           type: string
           minLength: 1
           maxLength: 100
-          pattern: '^[a-zA-Z0-9_-]$'
+          pattern: '.*'
         body:
+          description: The response body
           type: object
       required:
         - message
@@ -340,6 +352,7 @@ components:
       content:
         image/*:
           schema:
+            description: An image
             type: string
             format: binary
     UserPost: # 200 response for a post 
@@ -376,13 +389,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Comment'
-    username:
-      description: The username of a user
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/username'
 
 paths:
  
@@ -459,6 +465,7 @@ paths:
           content:
             application/json:
               schema:
+                description: User profile 
                 type: object
                 properties:
                   userInfo:
@@ -1089,10 +1096,13 @@ paths:
         content:
           multipart/form-data:
             schema:
+              description: image file
               type: object
               properties:
                 file:
                   type: string
+                  minLength: 1
+                  maxLength: 1000000000
                   format: binary
                   description: The image file to upload
       responses:
