@@ -273,9 +273,6 @@ export default {
             await this.fetchComments();
 
         },
-        editComment(comment) {
-            
-        },
         async deleteComment(comment) {
             let path = `users/${this.post.authorId}/posts/${this.post.postId}/comments/${comment.commentId}`;
             let response = await this.$axios.delete(path, {
