@@ -130,6 +130,14 @@ func (rt *_router) updateUserProfile(w http.ResponseWriter, r *http.Request, ps 
 		return
 	}
 
+	// Check that the username is not already taken
+	_, err = rt.db.GetUser(user.Username)
+	if err == nil {
+		// If the username is already taken, return a 409 status
+		w.WriteHeader(http.StatusConflict)
+		return
+	}
+
 	// Update the user with the specified ID
 	err = rt.db.UpdateUser(userID, user)
 	if err != nil {

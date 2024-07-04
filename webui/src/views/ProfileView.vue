@@ -112,35 +112,37 @@ export default {
         },
 
         async editProfile() {
-            // Send the updated user data to the server
             const token = sessionStorage.getItem('token');
             let path = `/users/${token}`;
 
-            // If the user did not upload a new photo, editForm.profileImage will be equal to the current user.profileImage
             if (this.editForm.profileImage == "") {
                 this.editForm.profileImage = this.user.profileImage;
             }
 
-            let response = await this.$axios.put(path, this.editForm, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            try {
+                let response = await this.$axios.put(path, this.editForm, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
 
-            if (response.status === 200) {
-                // Update username in sessionStorage
+                // Assuming successful update
                 sessionStorage.setItem('username', this.editForm.username);
                 console.log('Profile updated');
-            } else {
-                console.log('Failed to update profile');
+                this.fetchProfile();
+                this.showEditModal = false;
+            } catch (error) {
+                if (error.response && error.response.status === 409) {
+                    // Handle 409 Conflict error specifically
+                    console.error('Username already taken. Please choose a different username.');
+                    alert('Username already taken. Please choose a different username.');
+                } else {
+                    // Handle other errors
+                    console.error('An error occurred while updating your profile. Please try again.');
+                    alert('An error occurred while updating your profile. Please try again.');
+                }
             }
-
-            // Refresh
-            this.fetchProfile();
-
-
-            this.showEditModal = false;
         },
 
         async deleteProfile() {
