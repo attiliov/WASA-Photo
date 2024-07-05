@@ -37,6 +37,7 @@ export default {
             searchTerm: '',
             users: [],
             following: [],
+            followers: [],
             banned: [],
         };
     },
@@ -129,8 +130,9 @@ export default {
         },
         async fetchFollowInfo() {
             const userId = sessionStorage.getItem("token");
-            let path = `/users/${userId}/following`;
 
+            // Fetch followers
+            let path = `/users/${userId}/following`;
             let response = await this.$axios.get(path, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("token")}`
@@ -144,6 +146,23 @@ export default {
                 console.log(this.following);
             } else {
                 this.following = [];
+            }
+
+            // Fetch following
+            path = `/users/${userId}/followers`;
+            response = await this.$axios.get(path, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                }
+            });
+            if (response.status === 200) {
+                this.followers = response.data.users;
+                if (this.followers === null) {
+                    this.followers = [];
+                }
+                console.log(this.followers);
+            } else {
+                this.followers = [];
             }
         },
         async fetchBanInfo() {
