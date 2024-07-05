@@ -312,19 +312,27 @@ export default {
             this.updatedcommentId = comment.commentId;
         },
         async applyCommentChanges() {
-            let path = `users/${this.post.authorId}/posts/${this.post.postId}/comments/${this.updatedcommentId}`;
+            // Fetch comment to Update
+            var path = `users/${this.post.authorId}/posts/${this.post.postId}/comments/${this.updatedcommentId}`;
+            var newComment = {};
 
-            let newComment = {
-                commentId: this.updatedcommentId,
-                authorUsername: sessionStorage.getItem('username'),
-                authorId: sessionStorage.getItem('token'),
-                creationDate: new Date().toISOString(),
-                caption: this.updatedCommentCaption,
-                likeCount: 0
-            
-            };
+            var response = await this.$axios.get(path, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                }
+            });
 
-            const response = await this.$axios.put(path, newComment, {
+            if (response.status !== 200) {
+                console.log("Error fetching comment");
+            } else {
+                newComment = response.data;
+            }
+
+            newComment.caption = this.updatedCommentCaption;
+
+            path = `users/${this.post.authorId}/posts/${this.post.postId}/comments/${this.updatedcommentId}`;
+
+            response = await this.$axios.put(path, newComment, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("token")}`
                 }
