@@ -180,28 +180,31 @@ export default {
             this.isCommentModalVisible = false;
         },
         async submitComment() {
-            let path = `users/${this.post.authorId}/posts/${this.post.postId}/comments`;
+            // If this.newComment is empty or made of only white spaces
+            if (this.newComment.trim()) {
+                let path = `users/${this.post.authorId}/posts/${this.post.postId}/comments`;
 
-            // Get the authorId and authorUsername from the session
-            let authorId = sessionStorage.getItem('token');
-            let authorUsername = sessionStorage.getItem('username');
+                // Get the authorId and authorUsername from the session
+                let authorId = sessionStorage.getItem('token');
+                let authorUsername = sessionStorage.getItem('username');
 
-            // Prepare the comment data
-            let commentData = {
-                commentId: "",
-                authorUsername: authorUsername,
-                authorId: authorId,
-                creationDate: new Date().toISOString(),
-                caption: this.newComment,
-                likeCount: 0
-            };
+                // Prepare the comment data
+                let commentData = {
+                    commentId: "",
+                    authorUsername: authorUsername,
+                    authorId: authorId,
+                    creationDate: new Date().toISOString(),
+                    caption: this.newComment,
+                    likeCount: 0
+                };
 
-            // Send a POST request to the server
-            let response = await this.$axios.post(path, commentData, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('token')}`
-                }
-            });
+                // Send a POST request to the server
+                let response = await this.$axios.post(path, commentData, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem('token')}`
+                    }
+                });
+            }
 
             // After submitting, hide the modal and clear the comment
             this.hideCommentModal();

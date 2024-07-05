@@ -49,7 +49,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.PUT("/users/:userId/following/:followingId", rt.followUser)      // TESTED on frontend
 	rt.router.DELETE("/users/:userId/following/:followingId", rt.unfollowUser) // TESTED on frontend
 
-	rt.router.GET("/users/:userId/banned", rt.getUserBanList) // TESTED
+	rt.router.GET("/users/:userId/banned", rt.getUserBanList) // TESTED on frontend
 
 	rt.router.PUT("/users/:userId/banned/:bannedId", rt.banUser)      // TESTED on frontend
 	rt.router.DELETE("/users/:userId/banned/:bannedId", rt.unbanUser) // TESTED on frontend
