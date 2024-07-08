@@ -16,7 +16,9 @@
                 <strong>{{ post.commentCount }}</strong> Comments
             </div>
             <div>
-                <button class="like-button" :class="{ 'liked': isLiked }" @click="like">Like</button>
+                <button class="like-button" :class="{ 'liked': isLiked }" @click="like">
+                    {{ isLiked ? 'Unlike' : 'Like' }}
+                </button>
                 <button class="comment-button" @click="showCommentModal">Comment</button>
                 <button v-if="isAuthor" class="edit-button" @click="showEditModal">Edit</button>
                 <button v-if="isAuthor" class="delete-button" @click="deletePost">Delete</button>
