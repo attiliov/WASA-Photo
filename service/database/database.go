@@ -42,6 +42,7 @@ import (
 )
 
 // Embed the init.sql file
+//
 //go:embed init.sql
 var initSQLFile embed.FS
 
@@ -105,10 +106,10 @@ func New(db *sql.DB) (AppDatabase, error) {
 
 	// ---Initialize the database
 	// Read the embedded init.sql file
-    initSQL, err := initSQLFile.ReadFile("init.sql")
-    if err != nil {
-        return nil, fmt.Errorf("error reading init.sql: %w", err)
-    }
+	initSQL, err := initSQLFile.ReadFile("init.sql")
+	if err != nil {
+		return nil, fmt.Errorf("error reading init.sql: %w", err)
+	}
 	// Split the SQL statements
 	statements := strings.Split(string(initSQL), ";")
 	// Execute each statement
