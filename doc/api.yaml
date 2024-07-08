@@ -1141,25 +1141,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         "500": #server error
           $ref: '#/components/responses/InternalServerError'
-    
-    delete:
-      tags: ["photo"]
-      operationId: deletePhoto
-      summary: Delete a photo
-      description: |
-        This request is used to delete a photo.
-        The userId of the user who is requesting is taken from the bearer token. (only the uploader can request a deletion)
-        The photo owner and photoId is passed as a path parameter.
-        The response will return the image file.
-      responses:
-        "200":
-          $ref: '#/components/responses/Ok'
-        "404": #photo not found
-          $ref: '#/components/responses/NotFound'
-        "401":
-          $ref: '#/components/responses/Unauthorized'
-        "500": #server error
-          $ref: '#/components/responses/InternalServerError'
 
   /users/{userId}/feed:
     description: This endpoint is used to get the feed of an user

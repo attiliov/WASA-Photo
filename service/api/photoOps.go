@@ -98,7 +98,7 @@ func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 }
 
-func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+/* func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	// Get the user ID and photo ID from the URL
 	userID := ps.ByName("userId")
@@ -124,3 +124,4 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	// Set the header and write the response body
 	w.WriteHeader(http.StatusOK)
 }
+*/
