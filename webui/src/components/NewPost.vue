@@ -72,6 +72,7 @@ export default {
             } catch (error) {
                 // Handle the error
                 console.error('Error uploading photo:', error);
+                alert('Error uploading photo');
             }
         },
 
@@ -126,12 +127,14 @@ export default {
                     if (response.status == 200 || response.status == 201) {
                         // The request was successful, the photo was uploaded
                         console.log('Post uploaded:', response.data);
+                        alert('Post uploaded succesfully!');
                     } else {
                         // The request was not successful, the photo was not uploaded
                         console.log('Post not uploaded');
                     }
                 } catch (error) {
                     console.error('Error:', error);
+                    alert('Error uploading post');
                 }
             }
             this.caption = "";
