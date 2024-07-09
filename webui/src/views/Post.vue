@@ -304,6 +304,7 @@ export default {
 
             if (response.status !== 200) {
                 console.log("Error deleting post");
+                alert("Error deleting post, post not deleted.");
             } else {
                 if (this.post.image) {
                     let path = `users/${this.post.authorId}/photos/${this.post.image}`;
@@ -318,6 +319,7 @@ export default {
                         console.log("Photo deleted");
                     }
                 }
+                alert("Post deleted successfully");
                 this.$emit("delete");
             }
         },
