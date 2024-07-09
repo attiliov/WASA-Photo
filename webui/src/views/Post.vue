@@ -305,6 +305,19 @@ export default {
             if (response.status !== 200) {
                 console.log("Error deleting post");
             } else {
+                if (this.post.image) {
+                    let path = `users/${this.post.authorId}/photos/${this.post.image}`;
+                    let response = await this.$axios.delete(path, {
+                        headers: {
+                            Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                        }
+                    });
+                    if (response.status !== 200) {
+                        console.log("Error deleting photo");
+                    } else {
+                        console.log("Photo deleted");
+                    }
+                }
                 this.$emit("delete");
             }
         },
@@ -350,12 +363,25 @@ export default {
         },
         hideEditCommentModal() {
             this.isEditCommentModalVisible = false;
+        },
+        async fetchPhoto() {
+            if (this.post.image) {
+                const userId = this.post.authorId;
+                const photoId = this.post.image;
+                let path = `users/${userId}/photos/${photoId}`;
+                const response = await this.$axios.get(path, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                    }
+                });
+            }
         }
         
         
     },
     created() {
         this.fetchLikes();
+        this.fetchPhoto();
     }
 };
 </script>
